@@ -8,7 +8,10 @@ export DEBIAN_FRONTEND=noninteractive
 
 # 2. Update and Install Dependencies
 sudo apt-get update -y
-sudo apt-get install -y python3-pip python3-venv ffmpeg git
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository ppa:deadsnakes/ppa -y
+sudo apt-get update -y
+sudo apt-get install -y python3.11 python3.11-venv python3.11-dev python3-pip ffmpeg git
 
 # 3. Setup Virtual Environment in /root
 cd /root
@@ -19,7 +22,7 @@ else
 fi
 
 cd /root/nexa-downloader/backend
-python3 -m venv venv
+python3.11 -m venv venv
 ./venv/bin/pip install -r requirements.txt
 
 # 4. Create Systemd Service as Root
