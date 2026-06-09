@@ -119,6 +119,33 @@ cleanup_thread.start()
 # Helpers
 # ---------------------------------------------------------------------------
 
+_PROXY_LIST = []
+_PROXY_LIST_UPDATED = 0
+
+def get_random_proxy():
+    """Fetch and return a random free HTTP proxy to bypass Instagram 429 errors."""
+    global _PROXY_LIST, _PROXY_LIST_UPDATED
+    now = time.time()
+    if not _PROXY_LIST or now - _PROXY_LIST_UPDATED > 900:  # Refresh every 15 mins
+        try:
+            import httpx
+            with httpx.Client(timeout=10.0) as client:
+                # Use a reliable list of 2000+ free HTTP proxies
+                r = client.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt")
+                if r.status_code == 200:
+                    lines = [p.strip() for p in r.text.split("\n") if p.strip()]
+                    if lines:
+                        _PROXY_LIST = lines
+                        _PROXY_LIST_UPDATED = now
+                        logger.info(f"Refreshed free proxy list: {len(_PROXY_LIST)} proxies found.")
+        except Exception as e:
+            logger.error(f"Failed to refresh proxy list: {e}")
+    
+    if _PROXY_LIST:
+        import random
+        return f"http://{random.choice(_PROXY_LIST)}"
+    return None
+
 _ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
 
 
@@ -907,9 +934,32 @@ async def download(request: Request, url: str = Query(default=None)):
 
     try:
         def _extract():
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                return ydl.extract_info(url, download=False)
+            is_ig = "instagram.com" in url.lower()
+            max_retries = 5 if is_ig else 1
+            last_exc = None
+            
+            for attempt in range(max_retries):
+                opts = dict(ydl_opts)
+                if is_ig:
+                    proxy = get_random_proxy()
+                    if proxy:
+                        opts["proxy"] = proxy
+                        logger.info(f"Using proxy {proxy} for Instagram (Attempt {attempt+1}/{max_retries})")
                 
+                try:
+                    with yt_dlp.YoutubeDL(opts) as ydl:
+                        return ydl.extract_info(url, download=False)
+                except Exception as e:
+                    last_exc = e
+                    msg = _strip_ansi(str(e)).lower()
+                    if is_ig and any(ind in msg for ind in ["429", "too many requests", "unable to download webpage"]):
+                        logger.warning(f"Proxy failed or rate limited (Attempt {attempt+1}): {msg}")
+                        continue
+                    raise # Non-rate-limit error or not IG, so stop retrying
+            
+            # If all retries failed
+            raise last_exc
+
         info = await asyncio.to_thread(_extract)
     
     except Exception as exc:
@@ -920,6 +970,7 @@ async def download(request: Request, url: str = Query(default=None)):
 
         ig_error_indicators = ["no video", "empty media", "not granting access", "429", "too many requests", "unable to download webpage"]
         if "instagram.com" in url.lower() and any(ind in msg.lower() for ind in ig_error_indicators):
+            # Coba jalur fallback (embed / instaloader) jika semua proxy Gagal
             ig_resp = await _fallback_instagram_image(url)
             if ig_resp:
                 return ig_resp
