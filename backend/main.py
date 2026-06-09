@@ -1261,12 +1261,12 @@ async def view_reports(key: str = Query("")):
         <div class="bg-glow"></div>
         
         <nav class="sticky top-0 z-50 glass border-b border-white/[0.06] px-6 py-4 mb-10 shadow-lg">
-            <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div id="nav-content" class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                     {logo_html}
                     <div>
                         <h1 class="text-2xl font-black text-white tracking-tight text-glow">NEXA ADMIN</h1>
-                        <p class="text-xs font-bold text-blue-400 tracking-wider uppercase mt-0.5">Pusat Laporan & Kendala</p>
+                        <p class="text-xs font-bold text-blue-400 tracking-wider uppercase mt-0.5">Pusat Laporan & Kendala <span id="sync-status" class="ml-2 text-[10px] text-green-400 animate-pulse">(● Live Sync)</span></p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -1280,10 +1280,10 @@ async def view_reports(key: str = Query("")):
         </nav>
 
         <div class="max-w-6xl mx-auto px-6 relative z-10">
-            <div class="mb-8 flex items-center justify-between">
+            <div id="reports-header" class="mb-8 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-white">Daftar Laporan ({len(reports)})</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div id="reports-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {cards_html}
             </div>
         </div>
@@ -1295,7 +1295,7 @@ async def view_reports(key: str = Query("")):
             async function toggleRead(id) {{
                 try {{
                     const res = await fetch(`/api/report/${{id}}/read?key=${{key}}`, {{ method: 'PATCH' }});
-                    if(res.ok) window.location.reload();
+                    if(res.ok) fetchUpdate();
                 }} catch(e) {{
                     alert('Terjadi kesalahan koneksi');
                 }}
@@ -1305,7 +1305,7 @@ async def view_reports(key: str = Query("")):
                 if(confirm('Yakin ingin menghapus laporan ini secara permanen?')) {{
                     try {{
                         const res = await fetch(`/api/report/${{id}}?key=${{key}}`, {{ method: 'DELETE' }});
-                        if(res.ok) window.location.reload();
+                        if(res.ok) fetchUpdate();
                         else alert('Gagal menghapus laporan');
                     }} catch(e) {{
                         alert('Terjadi kesalahan koneksi');
@@ -1317,13 +1317,36 @@ async def view_reports(key: str = Query("")):
                 if(confirm('PERINGATAN KERAS: Yakin ingin menghapus SEMUA laporan? Tindakan ini tidak bisa dibatalkan.')) {{
                     try {{
                         const res = await fetch(`/api/reports?key=${{key}}`, {{ method: 'DELETE' }});
-                        if(res.ok) window.location.reload();
+                        if(res.ok) fetchUpdate();
                         else alert('Gagal menghapus semua laporan');
                     }} catch(e) {{
                         alert('Terjadi kesalahan koneksi');
                     }}
                 }}
             }}
+
+            // Real-time Auto Sync
+            async function fetchUpdate() {{
+                try {{
+                    const res = await fetch(window.location.href);
+                    const text = await res.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(text, 'text/html');
+                    
+                    const newGrid = doc.getElementById('reports-grid').innerHTML;
+                    const oldGrid = document.getElementById('reports-grid').innerHTML;
+                    
+                    if (newGrid !== oldGrid) {{
+                        document.getElementById('reports-grid').innerHTML = newGrid;
+                        document.getElementById('nav-content').innerHTML = doc.getElementById('nav-content').innerHTML;
+                        document.getElementById('reports-header').innerHTML = doc.getElementById('reports-header').innerHTML;
+                    }}
+                }} catch(e) {{
+                    console.log("Sync error", e);
+                }}
+            }}
+            
+            setInterval(fetchUpdate, 3000);
         </script>
     </body>
     </html>
