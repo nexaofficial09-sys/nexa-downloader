@@ -1263,7 +1263,8 @@ async def proxy_download(
     filename: str = Query(default="media"),
     platform: str = Query(default=""),
     is_image: bool = Query(default=False),
-    preview: bool = Query(default=False)
+    preview: bool = Query(default=False),
+    crop_portrait: bool = Query(default=False)
 ):
     """Proxy-stream a media file through the server."""
     if not url.startswith("http"):
@@ -1305,11 +1306,27 @@ async def proxy_download(
             content_type = resp.headers.get("Content-Type", "image/jpeg").lower()
             img_data = resp.content
             
-            # Convert WebP to JPG/PNG to ensure universal compatibility
+            # Convert WebP to JPG/PNG to ensure universal compatibility and handle cropping
             ext = ".jpg"
-            if "webp" in content_type and has_pil:
+            if has_pil and ("webp" in content_type or crop_portrait):
                 try:
                     img = Image.open(io.BytesIO(img_data))
+                    
+                    if crop_portrait:
+                        w, h = img.size
+                        target_ratio = 9 / 16
+                        current_ratio = w / h
+                        if current_ratio > target_ratio:
+                            # Too wide, crop horizontally
+                            new_w = int(h * target_ratio)
+                            left = (w - new_w) // 2
+                            img = img.crop((left, 0, left + new_w, h))
+                        elif current_ratio < target_ratio:
+                            # Too tall, crop vertically
+                            new_h = int(w / target_ratio)
+                            top = (h - new_h) // 2
+                            img = img.crop((0, top, w, top + new_h))
+
                     out_io = io.BytesIO()
                     if img.mode in ("RGBA", "P"):
                         img.save(out_io, format="PNG")
@@ -1322,8 +1339,8 @@ async def proxy_download(
                         ext = ".jpg"
                     img_data = out_io.getvalue()
                 except Exception as e:
-                    logger.error("Failed to convert WebP: %s", e)
-                    ext = ".webp"
+                    logger.error("Failed to process image: %s", e)
+                    if "webp" in content_type: ext = ".webp"
             else:
                 if "webp" in content_type: ext = ".webp"
                 elif "png" in content_type: ext = ".png"

@@ -86,11 +86,15 @@ function buildImageUrl(
   proxy: boolean,
   platform: string,
   preview = true,
+  crop_portrait = false,
 ): string {
   const fname = `${sanitizeFilename(title)}_img${idx}.jpg`;
   // Always proxy if we want to force a download (!preview), so the browser can download it natively
-  if (proxy || !preview)
-    return `${API_BASE}/api/proxy?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(fname)}&platform=${encodeURIComponent(platform)}&is_image=true&preview=${preview}`;
+  if (proxy || !preview || crop_portrait) {
+    let proxyUrl = `${API_BASE}/api/proxy?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(fname)}&platform=${encodeURIComponent(platform)}&is_image=true&preview=${preview}`;
+    if (crop_portrait) proxyUrl += "&crop_portrait=true";
+    return proxyUrl;
+  }
   return url;
 }
 
@@ -205,6 +209,31 @@ export default function Home() {
   
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [downloadingImageId, setDownloadingImageId] = useState<string | null>(null);
+
+  const handleImageDownload = async (url: string, filename: string, id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    if (downloadingImageId) return;
+    setDownloadingImageId(id);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Download failed");
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("Failed to download image via fetch, falling back to new tab", err);
+      window.open(url, "_blank");
+    } finally {
+      setDownloadingImageId(null);
+    }
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem("nexa_history");
@@ -537,6 +566,9 @@ export default function Home() {
       // Mobile: 2 cols, Tablet: 3 cols, Desktop: 4 cols
       <div className="columns-2 md:columns-3 xl:columns-4 gap-2.5 lg:gap-4 space-y-2.5 lg:space-y-4 fade-in-up">
         {result.images.map((img, idx) => {
+          const isYtShort =
+            result.platform?.toLowerCase() === "youtube" &&
+            result.original_url?.includes("/shorts/");
           const imgUrl = buildImageUrl(
             img.url,
             result.title,
@@ -544,6 +576,7 @@ export default function Home() {
             result.needs_proxy,
             result.platform,
             true,
+            isYtShort, // crop_portrait for preview
           );
           const downloadUrl = buildImageUrl(
             img.url,
@@ -552,10 +585,8 @@ export default function Home() {
             result.needs_proxy,
             result.platform,
             false,
+            isYtShort, // crop_portrait for download
           );
-          const isYtShort =
-            result.platform?.toLowerCase() === "youtube" &&
-            result.original_url?.includes("/shorts/");
           return (
             <div
               key={img.id}
@@ -578,27 +609,38 @@ export default function Home() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute bottom-0 left-0 right-0 p-2 lg:p-3 translate-y-0 lg:translate-y-3 lg:group-hover:translate-y-0 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300">
-                <a
-                  href={downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-2 bg-white text-slate-900 text-[11px] lg:text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 hover:bg-blue-50 transition-colors shadow-xl active:scale-95"
+                <button
+                  onClick={(e) => handleImageDownload(downloadUrl, `${sanitizeFilename(result.title)}_img${idx+1}.jpg`, img.id, e)}
+                  disabled={downloadingImageId === img.id}
+                  className="w-full py-2 bg-white text-slate-900 text-[11px] lg:text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 hover:bg-blue-50 transition-colors shadow-xl active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  <svg
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                    />
-                  </svg>
-                  Save
-                </a>
+                  {downloadingImageId === img.id ? (
+                    <>
+                      <svg className="animate-spin h-3.5 w-3.5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-3.5 h-3.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                        />
+                      </svg>
+                      Save
+                    </>
+                  )}
+                </button>
               </div>
               <div className="absolute top-1.5 right-1.5 lg:top-2 lg:right-2 px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-white text-[9px] lg:text-[10px] font-bold">
                 {idx + 1}/{result.images.length}
