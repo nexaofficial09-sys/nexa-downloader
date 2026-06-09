@@ -538,6 +538,8 @@ async def _fallback_rapidapi_instagram(url: str) -> JSONResponse:
             
         is_image_only = len(video_audio) == 0
         
+        record_download('instagram')
+        
         return JSONResponse(content={
             "success": True,
             "title": "Instagram Post",
@@ -600,6 +602,7 @@ async def _fallback_generic_opengraph(url: str, platform: str = "generic") -> JS
             "url": img_url,
             "ext": "jpg"
         }]
+        record_download('twitter')
 
         return JSONResponse(content={
             "success": True,
@@ -675,7 +678,8 @@ async def _fallback_twitter(url: str):
                     })
                     
         is_image_only = len(video_formats) == 0
-        
+        record_download('twitter')
+
         return JSONResponse(content={
             "success": True,
             "title": title.replace('\n', ' ')[:80],
@@ -739,6 +743,8 @@ async def _fallback_tiktok(url: str):
                             "url": img_url,
                             "ext": "jpg"
                         })
+                
+                record_download('tiktok')
                 
                 return JSONResponse(content={
                     "success": True,
@@ -825,6 +831,8 @@ async def _fallback_instagram_image(url: str) -> Optional[JSONResponse]:
             "ext": "jpg"
         }]
 
+        record_download('instagram')
+
         return JSONResponse(content={
             "success": True,
             "title": title,
@@ -881,6 +889,7 @@ async def _fallback_facebook(url: str) -> JSONResponse:
             "url": img_url,
             "ext": "jpg"
         }]
+        record_download('facebook')
 
         return JSONResponse(content={
             "success": True,
@@ -1561,6 +1570,7 @@ async def view_reports(key: str = Query("")):
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Dashboard - NEXA</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         <style>
             body {{ font-family: 'Inter', sans-serif; background-color: #070b14; color: #f8fafc; }}
@@ -1593,38 +1603,57 @@ async def view_reports(key: str = Query("")):
         </nav>
 
         <div class="max-w-6xl mx-auto px-6 relative z-10 mb-10" id="stats-section">
-            <h2 class="text-xl font-bold text-white mb-4">Statistik Penggunaan</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4" id="stats-grid">
-                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1">
-                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Total Unduhan</p>
-                    <p class="text-4xl font-black text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">{stats.get('total', 0)}</p>
+            <h2 class="text-xl font-bold text-white mb-4">Statistik Penggunaan Platform</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="stats-grid">
+                
+                <!-- Chart Section -->
+                <div class="col-span-1 lg:col-span-1 glass-dark border border-white/10 rounded-3xl p-6 flex flex-col items-center justify-center shadow-lg relative overflow-hidden">
+                    <div class="absolute -top-20 -right-20 w-40 h-40 bg-blue-500/20 blur-[50px] rounded-full"></div>
+                    <h3 class="text-slate-300 font-bold mb-4 text-sm tracking-widest uppercase">Distribusi Unduhan</h3>
+                    <div class="relative w-[220px] h-[220px]">
+                        <canvas id="platformChart"></canvas>
+                    </div>
                 </div>
-                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-green-500/30 transition-all duration-300 hover:-translate-y-1">
-                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Hari Ini</p>
-                    <p class="text-4xl font-black text-green-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">{stats.get('today', 0)}</p>
-                </div>
-                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-pink-500/30 transition-all duration-300 hover:-translate-y-1">
-                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">TikTok</p>
-                    <p class="text-4xl font-black text-pink-400 drop-shadow-[0_0_15px_rgba(244,114,182,0.3)]">{tiktok_downloads}</p>
-                </div>
-                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1">
-                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Instagram</p>
-                    <p class="text-4xl font-black text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">{ig_downloads}</p>
-                </div>
-                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-red-500/30 transition-all duration-300 hover:-translate-y-1">
-                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">YouTube</p>
-                    <p class="text-4xl font-black text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.3)]">{yt_downloads}</p>
-                </div>
-                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-slate-400/30 transition-all duration-300 hover:-translate-y-1">
-                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Twitter/X</p>
-                    <p class="text-4xl font-black text-slate-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">{tw_downloads}</p>
-                </div>
-                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-blue-600/30 transition-all duration-300 hover:-translate-y-1">
-                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Facebook</p>
-                    <p class="text-4xl font-black text-blue-500 drop-shadow-[0_0_15px_rgba(37,99,235,0.3)]">{fb_downloads}</p>
+
+                <!-- Stats Grid -->
+                <div class="col-span-1 lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Total Keseluruhan</p>
+                        <p class="text-4xl font-black text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">{stats.get('total', 0)}</p>
+                    </div>
+                    <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-green-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Hari Ini</p>
+                        <p class="text-4xl font-black text-green-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">{stats.get('today', 0)}</p>
+                    </div>
+                    <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-pink-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest">TikTok</p>
+                        <p class="text-3xl font-black text-pink-400 drop-shadow-[0_0_15px_rgba(244,114,182,0.3)]">{tiktok_downloads}</p>
+                    </div>
+                    <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Instagram</p>
+                        <p class="text-3xl font-black text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">{ig_downloads}</p>
+                    </div>
+                    <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-red-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest">YouTube</p>
+                        <p class="text-3xl font-black text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.3)]">{yt_downloads}</p>
+                    </div>
+                    <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-blue-600/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest flex justify-between">
+                            <span>Facebook</span>
+                            <span class="text-slate-500">| Twitter: <span class="text-slate-300">{tw_downloads}</span></span>
+                        </p>
+                        <p class="text-3xl font-black text-blue-500 drop-shadow-[0_0_15px_rgba(37,99,235,0.3)]">{fb_downloads}</p>
+                    </div>
                 </div>
             </div>
         </div>
+
 
         <div class="max-w-6xl mx-auto px-6 relative z-10">
             <div id="reports-header" class="mb-8 flex items-center justify-between">
@@ -1672,36 +1701,94 @@ async def view_reports(key: str = Query("")):
                 }}
             }}
 
-            // Real-time Auto Sync
-            async function fetchUpdate() {{
+            async function syncData() {{
                 try {{
-                    const res = await fetch(window.location.href);
-                    const text = await res.text();
+                    const response = await fetch('/api/reports?key=' + key + '&view=true');
+                    const text = await response.text();
+                    
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(text, 'text/html');
                     
-                    const newGrid = doc.getElementById('reports-grid').innerHTML;
-                    const oldGrid = document.getElementById('reports-grid').innerHTML;
-                    
-                    if (newGrid !== oldGrid) {{
-                        document.getElementById('reports-grid').innerHTML = newGrid;
-                        document.getElementById('nav-content').innerHTML = doc.getElementById('nav-content').innerHTML;
+                    const newReports = doc.getElementById('reports-grid');
+                    if (newReports) {{
+                        document.getElementById('reports-grid').innerHTML = newReports.innerHTML;
+                        
                         document.getElementById('reports-header').innerHTML = doc.getElementById('reports-header').innerHTML;
+                        document.getElementById('nav-content').innerHTML = doc.getElementById('nav-content').innerHTML;
                     }}
                     
                     const newStats = doc.getElementById('stats-section');
                     if (newStats) {{
                         document.getElementById('stats-section').innerHTML = newStats.innerHTML;
+                        initChart();
                     }}
-                }} catch(e) {{
-                    console.log("Sync error", e);
+                    
+                }} catch (e) {{
+                    console.error('Failed to sync:', e);
                 }}
             }}
             
-            setInterval(fetchUpdate, 3000);
+            let myChart = null;
+            function initChart() {{
+                const ctx = document.getElementById('platformChart');
+                if (!ctx) return;
+                
+                if (myChart) {{
+                    myChart.destroy();
+                }}
+                
+                const data = {{
+                    labels: ['TikTok', 'Instagram', 'YouTube', 'Facebook', 'Twitter/X'],
+                    datasets: [{{
+                        data: [{tiktok_downloads}, {ig_downloads}, {yt_downloads}, {fb_downloads}, {tw_downloads}],
+                        backgroundColor: [
+                            'rgba(244, 114, 182, 0.8)',
+                            'rgba(168, 85, 247, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(255, 255, 255, 0.8)'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }}]
+                }};
+
+                myChart = new Chart(ctx, {{
+                    type: 'doughnut',
+                    data: data,
+                    options: {{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {{
+                            legend: {{ display: false }},
+                            tooltip: {{
+                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                titleColor: '#fff',
+                                bodyColor: '#cbd5e1',
+                                borderColor: 'rgba(255,255,255,0.1)',
+                                borderWidth: 1,
+                                padding: 12,
+                                cornerRadius: 8,
+                                displayColors: true,
+                                callbacks: {{
+                                    label: function(context) {{
+                                        let label = context.label || '';
+                                        if (label) label += ': ';
+                                        if (context.parsed !== null) label += context.parsed;
+                                        return label;
+                                    }}
+                                }}
+                            }}
+                        }}
+                    }}
+                }});
+            }}
+            
+            document.addEventListener('DOMContentLoaded', initChart);
+            setInterval(syncData, 5000);
         </script>
     </body>
     </html>
     """
     return HTMLResponse(content=html)
-

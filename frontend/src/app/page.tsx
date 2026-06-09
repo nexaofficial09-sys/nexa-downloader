@@ -232,6 +232,20 @@ export default function Home() {
     });
   };
 
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem("nexa_history");
+  };
+
+  const deleteHistoryItem = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setHistory((prev) => {
+      const updated = prev.filter(h => h.id !== id);
+      localStorage.setItem("nexa_history", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   // Custom alerts/modals
   const [showContactModal, setShowContactModal] = useState(false);
   const [contactFormStatus, setContactFormStatus] = useState<
@@ -1739,8 +1753,23 @@ export default function Home() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <h3 className="text-2xl font-bold text-white mb-2 text-glow">Riwayat Unduhan</h3>
-            <p className="text-slate-400 text-sm mb-6">15 unduhan terakhir yang Anda lakukan dari browser ini.</p>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-1 text-glow">Riwayat Unduhan</h3>
+                <p className="text-slate-400 text-sm">15 unduhan terakhir yang Anda lakukan.</p>
+              </div>
+              {history.length > 0 && (
+                <button
+                  onClick={clearHistory}
+                  className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold rounded-lg border border-red-500/20 transition-colors flex items-center gap-1.5 shrink-0"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Hapus Semua
+                </button>
+              )}
+            </div>
             
             <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
               {history.length === 0 ? (
@@ -1749,17 +1778,28 @@ export default function Home() {
                 </div>
               ) : (
                 history.map((h) => (
-                  <div key={h.id} className="flex gap-4 p-3 bg-white/[0.03] border border-white/5 rounded-xl hover:bg-white/[0.05] transition-colors group relative cursor-pointer" onClick={() => { setUrl(h.original_url); setShowHistory(false); }}>
-                    <div className="w-20 h-16 shrink-0 bg-black/40 rounded-lg overflow-hidden border border-white/10">
-                      <img src={h.thumbnail || '/logo.png'} alt="Thumb" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                    <div className="flex flex-col justify-center overflow-hidden">
-                      <h4 className="text-white font-bold text-sm truncate mb-1 max-w-[200px] lg:max-w-[250px]">{h.title || 'Video'}</h4>
-                      <div className="flex items-center gap-2 text-xs">
-                        <span className="text-blue-400 uppercase font-black tracking-wider text-[10px] bg-blue-500/10 px-2 py-0.5 rounded">{h.platform}</span>
-                        <span className="text-slate-500">{new Date(h.timestamp).toLocaleDateString('id-ID')}</span>
+                  <div key={h.id} className="flex items-center justify-between gap-4 p-3 bg-white/[0.03] border border-white/5 rounded-xl hover:bg-white/[0.05] transition-colors group relative cursor-pointer" onClick={() => { setUrl(h.original_url); setShowHistory(false); }}>
+                    <div className="flex items-center gap-4 flex-1 overflow-hidden">
+                      <div className="w-20 h-16 shrink-0 bg-black/40 rounded-lg overflow-hidden border border-white/10">
+                        <img src={h.thumbnail || '/logo.png'} alt="Thumb" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                      <div className="flex flex-col justify-center overflow-hidden">
+                        <h4 className="text-white font-bold text-sm truncate mb-1 max-w-[200px] lg:max-w-[250px]">{h.title || 'Video'}</h4>
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-blue-400 uppercase font-black tracking-wider text-[10px] bg-blue-500/10 px-2 py-0.5 rounded">{h.platform}</span>
+                          <span className="text-slate-500">{new Date(h.timestamp).toLocaleDateString('id-ID')}</span>
+                        </div>
                       </div>
                     </div>
+                    <button
+                      onClick={(e) => deleteHistoryItem(h.id, e)}
+                      className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors shrink-0"
+                      title="Hapus riwayat ini"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
                   </div>
                 ))
               )}
