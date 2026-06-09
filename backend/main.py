@@ -726,6 +726,73 @@ async def _fallback_tiktok(url: str):
         logger.error("TikTok manual fallback error: %s", e)
     return None
 
+async def _fallback_instagram_image(url: str) -> Optional[JSONResponse]:
+    """Fallback for Instagram image posts by parsing the OpenGraph tags using yt-dlp's networking to bypass blocks."""
+    try:
+        import yt_dlp
+        import re
+        import html as html_lib
+        
+        def fetch_html():
+            ydl_opts = {
+                "quiet": True,
+                "skip_download": True,
+                "no_warnings": True,
+                "source_address": "0.0.0.0",
+                "js_runtimes": {"deno": {"path": "d:/Web/NEXA Downloader/backend/deno.exe"}},
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                return ydl.urlopen(url).read().decode('utf-8')
+                
+        html_content = await asyncio.to_thread(fetch_html)
+        
+        if "Login • Instagram" in html_content or "login_required" in html_content:
+            return None # Blocked by login wall
+            
+        # Extract image
+        img_match = re.search(r'<meta[^>]*property="og:image"[^>]*content="([^"]+)"', html_content)
+        if not img_match:
+            img_match = re.search(r'<meta[^>]*content="([^"]+)"[^>]*property="og:image"', html_content)
+            
+        if not img_match:
+            return None
+            
+        img_url = html_lib.unescape(img_match.group(1)).replace('&amp;', '&')
+        
+        # Extract title
+        title_match = re.search(r'<meta[^>]*property="og:title"[^>]*content="([^"]+)"', html_content)
+        if not title_match:
+            title_match = re.search(r'<meta[^>]*content="([^"]+)"[^>]*property="og:title"', html_content)
+            
+        title = title_match.group(1) if title_match else "Instagram Post"
+        title = html_lib.unescape(title).replace('\n', ' ').replace('\r', '')[:80]
+        
+        images = [{
+            "id": "slide_1",
+            "url": img_url,
+            "ext": "jpg"
+        }]
+
+        return JSONResponse(content={
+            "success": True,
+            "title": title,
+            "thumbnail": img_url,
+            "duration": None,
+            "platform": "instagram",
+            "original_url": url,
+            "needs_proxy": True,
+            "is_image_only": True,
+            "formats": {
+                "video_audio": [],
+                "video_only": [],
+                "audio_only": []
+            },
+            "images": images
+        })
+    except Exception as e:
+        logger.error("Instagram OpenGraph fallback error: %s", e)
+        return None
+
 async def _fallback_facebook(url: str) -> JSONResponse:
     try:
         # Async HTTP GET to extract OpenGraph tags without blocking the event loop
@@ -835,6 +902,9 @@ async def download(request: Request, url: str = Query(default=None)):
             raise HTTPException(status_code=400, detail="Video ini dilindungi oleh sistem anti-bot YouTube (BotGuard/SABR) atau hak cipta (DRM), sehingga tidak dapat didownload saat ini.")
 
         if "instagram.com" in url.lower() and ("no video" in msg.lower() or "empty media" in msg.lower() or "not granting access" in msg.lower()):
+            ig_resp = await _fallback_instagram_image(url)
+            if ig_resp:
+                return ig_resp
             return _fallback_instaloader(url)
             
         if "tiktok.com" in url.lower() and ("no video" in msg.lower() or "empty media" in msg.lower()):
