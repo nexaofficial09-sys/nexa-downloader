@@ -1089,6 +1089,12 @@ from datetime import datetime
 from fastapi.responses import HTMLResponse
 import json
 import uuid
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class ReportRequest(BaseModel):
     email: str
@@ -1109,9 +1115,46 @@ def _save_reports(reports):
     with open(REPORTS_FILE, "w", encoding="utf-8") as f:
         json.dump(reports, f, indent=4)
 
+def send_email_notification(user_email: str, message: str):
+    sender_email = os.environ.get("SMTP_EMAIL")
+    sender_password = os.environ.get("SMTP_PASSWORD")
+    if not sender_email or not sender_password:
+        return
+        
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = f"NEXA System <{sender_email}>"
+        msg['To'] = sender_email
+        msg['Subject'] = "🚨 Laporan Kendala Baru - NEXA Downloader"
+        
+        body = f"""
+        <html>
+            <body>
+                <h2>Ada Laporan Kendala Baru!</h2>
+                <p><strong>Dari Pengguna:</strong> {user_email}</p>
+                <p><strong>Waktu:</strong> {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
+                <hr style="border: 1px solid #eee;">
+                <p><strong>Isi Pesan / Laporan:</strong></p>
+                <p style="background: #f9f9f9; padding: 15px; border-radius: 8px;">{message}</p>
+                <br>
+                <a href="https://api.nexalabs.my.id/api/reports?key=nexaadmin123" style="background: #3b82f6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Cek Dashboard Admin</a>
+            </body>
+        </html>
+        """
+        msg.attach(MIMEText(body, 'html'))
+        
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.send_message(msg)
+        server.quit()
+        logger.info("Email notification sent successfully.")
+    except Exception as e:
+        logger.error(f"Failed to send email notification: {e}")
+
 @app.post("/api/report")
-async def submit_report(req: ReportRequest):
-    """Save user report to JSON."""
+async def submit_report(req: ReportRequest, background_tasks: BackgroundTasks):
+    """Save user report to JSON and send email."""
     try:
         reports = _load_reports()
         new_report = {
@@ -1124,6 +1167,10 @@ async def submit_report(req: ReportRequest):
         # insert at the beginning
         reports.insert(0, new_report)
         _save_reports(reports)
+        
+        # Kirim email secara asinkron di belakang layar
+        background_tasks.add_task(send_email_notification, req.email, req.message)
+        
         return {"status": "success", "message": "Pesan berhasil disimpan"}
     except Exception as e:
         logger.error(f"Failed to save report: {e}")
