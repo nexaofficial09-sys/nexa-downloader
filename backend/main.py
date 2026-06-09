@@ -727,11 +727,18 @@ async def _fallback_tiktok(url: str):
     return None
 
 async def _fallback_instagram_image(url: str) -> Optional[JSONResponse]:
-    """Fallback for Instagram image posts by parsing the OpenGraph tags using yt-dlp's networking to bypass blocks."""
+    """Fallback for Instagram image posts using the /embed/ endpoint to bypass 429 and login blocks."""
     try:
         import yt_dlp
         import re
         import html as html_lib
+        
+        # Ensure url ends with / if it doesn't have query params, or we can just extract the shortcode
+        shortcode_match = re.search(r"/(?:p|reel|tv)/([^/?#&]+)", url)
+        if not shortcode_match:
+            return None
+        shortcode = shortcode_match.group(1)
+        embed_url = f"https://www.instagram.com/p/{shortcode}/embed/"
         
         def fetch_html():
             ydl_opts = {
@@ -742,22 +749,32 @@ async def _fallback_instagram_image(url: str) -> Optional[JSONResponse]:
                 "js_runtimes": {"deno": {"path": "d:/Web/NEXA Downloader/backend/deno.exe"}},
             }
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                return ydl.urlopen(url).read().decode('utf-8')
+                try:
+                    return ydl.urlopen(embed_url).read().decode('utf-8')
+                except Exception:
+                    # Fallback to standard url if embed fails
+                    return ydl.urlopen(url).read().decode('utf-8')
                 
         html_content = await asyncio.to_thread(fetch_html)
         
         if "Login • Instagram" in html_content or "login_required" in html_content:
             return None # Blocked by login wall
             
-        # Extract image
-        img_match = re.search(r'<meta[^>]*property="og:image"[^>]*content="([^"]+)"', html_content)
+        # Extract image from embed HTML
+        img_match = re.search(r'class="EmbeddedMediaImage"[^>]*src="([^"]+)"', html_content)
+        if not img_match:
+            img_match = re.search(r'<img[^>]+src="([^"]+)"[^>]*class="EmbeddedMediaImage', html_content)
+            
+        # If embed parsing fails, try standard OpenGraph parsing just in case we fell back to the main URL
+        if not img_match:
+            img_match = re.search(r'<meta[^>]*property="og:image"[^>]*content="([^"]+)"', html_content)
         if not img_match:
             img_match = re.search(r'<meta[^>]*content="([^"]+)"[^>]*property="og:image"', html_content)
             
         if not img_match:
             return None
             
-        img_url = html_lib.unescape(img_match.group(1)).replace('&amp;', '&')
+        img_url = html_lib.unescape(img_match.group(1)).replace('&amp;', '&').replace('\\/', '/')
         
         # Extract title
         title_match = re.search(r'<meta[^>]*property="og:title"[^>]*content="([^"]+)"', html_content)
