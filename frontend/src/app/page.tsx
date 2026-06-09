@@ -438,7 +438,7 @@ export default function Home() {
                     const extraParams =
                       !fmt.needs_merge && fmt.url
                         ? `&direct_url=${encodeURIComponent(fmt.url)}&ext=${encodeURIComponent(fmt.ext)}`
-                        : "";
+                        : `&ext=${encodeURIComponent(fmt.ext)}`;
                     const startUrl = `${API_BASE}/api/start-merge?url=${encodeURIComponent(result!.original_url)}&format_id=${encodeURIComponent(fmt.format_id)}${extraParams}`;
                     const res = await fetch(startUrl);
                     const data = await res.json();
