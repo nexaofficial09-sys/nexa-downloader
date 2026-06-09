@@ -406,7 +406,7 @@ export default function Home() {
                   {fmt.ext}
                 </span>
                 {fmt.needs_merge && (
-                  <span className="text-[10px] uppercase font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-md px-2 py-0.5 flex items-center gap-1 tracking-wider">
+                  <span className={`text-[10px] uppercase font-bold rounded-md px-2 py-0.5 flex items-center gap-1 tracking-wider border ${fmt.ext === 'mp3' ? 'text-green-400 bg-green-500/10 border-green-500/20' : 'text-blue-400 bg-blue-500/10 border-blue-500/20'}`}>
                     <svg
                       className="w-3 h-3"
                       fill="none"
@@ -417,10 +417,10 @@ export default function Home() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                        d={fmt.ext === 'mp3' ? "M9 19V6l12-3v13M9 19c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm12-3c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zM9 10l12-3" : "M13 10V3L4 14h7v7l9-11h-7z"}
                       />
                     </svg>
-                    Merge
+                    {fmt.ext === 'mp3' ? 'Convert' : 'Merge'}
                   </span>
                 )}
               </div>
@@ -1642,12 +1642,12 @@ export default function Home() {
                mergeAlert.status === "fake_animating"
               ? "Menyiapkan File..."
               : mergeAlert.status === "merging"
-              ? "Menggabungkan Video & Audio..."
+              ? (mergeAlert.filename.endsWith(".mp3") ? "Mengonversi ke MP3..." : "Menggabungkan Video & Audio...")
               : mergeAlert.status === "done"
               ? "Selesai!"
               : mergeAlert.status === "error"
                   ? "Terjadi Kesalahan"
-                  : "Mengunduh ke Server..."}
+                  : (mergeAlert.filename.endsWith(".mp3") ? "Mengunduh Audio..." : "Mengunduh ke Server...")}
             </h3>
 
             <p className="text-sm text-slate-400 leading-relaxed mb-5">
