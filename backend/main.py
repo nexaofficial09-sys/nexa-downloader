@@ -956,7 +956,7 @@ async def start_merge_task(url: str = Query(...), format_id: str = Query(...), d
     """Starts a background task to download and optionally merge formats, or directly download fallbacks."""
     import glob
 
-    task_id = hashlib.md5(f"{url}_{format_id}_{direct_url or ''}".encode()).hexdigest()
+    task_id = hashlib.md5(f"{url}_{format_id}_{direct_url or ''}_{ext}".encode()).hexdigest()
     
     # Check if a completed file already exists
     existing_files = [f for f in glob.glob(os.path.join(TEMP_DIR, f"{task_id}.*")) 
