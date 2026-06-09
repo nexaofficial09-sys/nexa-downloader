@@ -175,6 +175,25 @@ const PLATFORMS = [
 // ---------------------------------------------------------------------------
 // Main Page
 // ---------------------------------------------------------------------------
+
+interface HistoryItem {
+  id: string;
+  title: string;
+  thumbnail: string;
+  platform: string;
+  timestamp: number;
+  original_url: string;
+}
+
+const AdBanner = ({ className = "" }: { className?: string }) => (
+  <div className={`w-full max-w-4xl mx-auto my-6 bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center overflow-hidden relative group ${className}`}>
+    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 border border-slate-700/50 px-2 py-0.5 rounded-full">Ruang Iklan Sponsor</span>
+    <h3 className="text-lg font-black text-slate-300 drop-shadow-md">Pasang Iklan Anda di Sini</h3>
+    <p className="text-xs text-slate-400 mt-1 max-w-md">Jangkau ribuan pengguna NEXA Downloader setiap harinya. Hubungi admin untuk detail pemasangan.</p>
+  </div>
+);
+
 export default function Home() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -183,6 +202,35 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<
     "video_audio" | "video_only" | "audio_only" | "images"
   >("video_audio");
+  
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("nexa_history");
+    if (saved) {
+      try {
+        setHistory(JSON.parse(saved));
+      } catch (e) {}
+    }
+  }, []);
+
+  const addToHistory = (res: ExtractResult) => {
+    setHistory((prev) => {
+      const newItem: HistoryItem = {
+        id: Date.now().toString(),
+        title: res.title,
+        thumbnail: res.thumbnail || "",
+        platform: res.platform || "unknown",
+        timestamp: Date.now(),
+        original_url: res.original_url
+      };
+      const filtered = prev.filter(h => h.original_url !== res.original_url);
+      const updated = [newItem, ...filtered].slice(0, 15);
+      localStorage.setItem("nexa_history", JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   // Custom alerts/modals
   const [showContactModal, setShowContactModal] = useState(false);
@@ -275,6 +323,7 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Failed to extract.");
       setResult(data);
+      addToHistory(data);
       if (
         data.is_image_only ||
         (data.images?.length > 0 && data.formats.video_audio.length === 0)
@@ -734,6 +783,9 @@ export default function Home() {
               ))}
             </div>
           )}
+          
+          {/* ---- AD BANNER (TOP) ---- */}
+          {!loading && !result && <AdBanner className="mb-8 fade-in-up" />}
 
           {/* ---- ERROR ---- */}
           {error && (
@@ -1313,6 +1365,7 @@ export default function Home() {
             </div>
           </div>
 
+          <AdBanner className="mb-4 lg:mb-8" />
           <div className="flex-1" />
         </div>
       </div>
@@ -1653,6 +1706,64 @@ export default function Home() {
                 ? "Tutup"
                 : "Sembunyikan"}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================
+          FLOATING ACTION BUTTON (HISTORY)
+          ============================================================ */}
+      <button
+        onClick={() => setShowHistory(true)}
+        className="fixed bottom-24 right-6 lg:bottom-32 lg:right-10 z-40 flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 bg-white/[0.05] border border-white/10 hover:bg-white/10 text-slate-300 hover:text-white rounded-full shadow-lg hover:-translate-y-1 transition-all duration-300 group backdrop-blur-md"
+      >
+        <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span className="absolute right-full mr-4 px-3 py-1.5 bg-slate-800 text-slate-200 text-xs font-semibold rounded-lg shadow-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap hidden md:block">
+          Riwayat Unduhan
+        </span>
+      </button>
+
+      {/* ============================================================
+          HISTORY DRAWER
+          ============================================================ */}
+      {showHistory && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-[#0b1121] border border-white/10 rounded-3xl p-6 lg:p-8 max-w-lg w-full shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col max-h-[85vh]">
+            <button
+              onClick={() => setShowHistory(false)}
+              className="absolute top-5 right-5 text-slate-500 hover:text-white transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <h3 className="text-2xl font-bold text-white mb-2 text-glow">Riwayat Unduhan</h3>
+            <p className="text-slate-400 text-sm mb-6">15 unduhan terakhir yang Anda lakukan dari browser ini.</p>
+            
+            <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+              {history.length === 0 ? (
+                <div className="text-center py-10">
+                  <p className="text-slate-500">Belum ada riwayat unduhan.</p>
+                </div>
+              ) : (
+                history.map((h) => (
+                  <div key={h.id} className="flex gap-4 p-3 bg-white/[0.03] border border-white/5 rounded-xl hover:bg-white/[0.05] transition-colors group relative cursor-pointer" onClick={() => { setUrl(h.original_url); setShowHistory(false); }}>
+                    <div className="w-20 h-16 shrink-0 bg-black/40 rounded-lg overflow-hidden border border-white/10">
+                      <img src={h.thumbnail || '/logo.png'} alt="Thumb" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <div className="flex flex-col justify-center overflow-hidden">
+                      <h4 className="text-white font-bold text-sm truncate mb-1 max-w-[200px] lg:max-w-[250px]">{h.title || 'Video'}</h4>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-blue-400 uppercase font-black tracking-wider text-[10px] bg-blue-500/10 px-2 py-0.5 rounded">{h.platform}</span>
+                        <span className="text-slate-500">{new Date(h.timestamp).toLocaleDateString('id-ID')}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       )}

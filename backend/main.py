@@ -14,7 +14,8 @@ from typing import Optional
 
 import httpx
 import yt_dlp
-from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
+import collections
+from fastapi import FastAPI, HTTPException, Query, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 
@@ -41,6 +42,51 @@ logger = logging.getLogger("nexa-downloader")
 # Temp directory for downloading and merging 4K videos
 TEMP_DIR = os.path.join(os.path.dirname(__file__), "temp_downloads")
 os.makedirs(TEMP_DIR, exist_ok=True)
+
+# ---------------------------------------------------------------------------
+# Rate Limiting & Analytics
+# ---------------------------------------------------------------------------
+import time
+
+RATE_LIMIT_STORE = collections.defaultdict(list)
+def check_rate_limit(request: Request, limit: int = 10, window_sec: int = 60):
+    ip = getattr(request.client, "host", "127.0.0.1") if request.client else "127.0.0.1"
+    now = time.time()
+    RATE_LIMIT_STORE[ip] = [t for t in RATE_LIMIT_STORE[ip] if t > now - window_sec]
+    if len(RATE_LIMIT_STORE[ip]) >= limit:
+        raise HTTPException(status_code=429, detail="Terlalu banyak permintaan. Harap tunggu sebentar.")
+    RATE_LIMIT_STORE[ip].append(now)
+
+STATS_FILE = os.path.join(os.path.dirname(__file__), "Statistik.json")
+
+def load_stats():
+    if not os.path.exists(STATS_FILE):
+        return {"total": 0, "today": 0, "last_date": "", "platforms": {}}
+    try:
+        import json
+        with open(STATS_FILE, "r") as f:
+            return json.load(f)
+    except:
+        return {"total": 0, "today": 0, "last_date": "", "platforms": {}}
+
+def save_stats(stats):
+    import json
+    with open(STATS_FILE, "w") as f:
+        json.dump(stats, f)
+
+def record_download(platform: str):
+    from datetime import datetime
+    stats = load_stats()
+    today = datetime.now().strftime("%Y-%m-%d")
+    if stats.get("last_date") != today:
+        stats["today"] = 0
+        stats["last_date"] = today
+    
+    stats["total"] += 1
+    stats["today"] += 1
+    if "platforms" not in stats: stats["platforms"] = {}
+    stats["platforms"][platform] = stats["platforms"].get(platform, 0) + 1
+    save_stats(stats)
 
 # ---------------------------------------------------------------------------
 # Background Auto-Cleanup
@@ -682,8 +728,10 @@ import tempfile
 
 
 @app.get("/api/download")
-async def download(url: str = Query(default=None)):
+async def download(request: Request, url: str = Query(default=None)):
     """Extract metadata, formats, and images."""
+    check_rate_limit(request, limit=10, window_sec=60)
+    
     if not url or not url.strip():
         raise HTTPException(status_code=400, detail="URL is required.")
     url = url.strip()
@@ -809,6 +857,8 @@ async def download(url: str = Query(default=None)):
                 status_code=422,
                 detail="Post tidak valid atau format tidak didukung."
             )
+
+        record_download(platform)
 
         return JSONResponse(content={
             "success": True,
@@ -1202,6 +1252,7 @@ async def view_reports(key: str = Query("")):
         return HTMLResponse(content="<h1 style='color:white; font-family:sans-serif;'>403 Forbidden - Kunci Salah</h1>", status_code=403)
     
     reports = _load_reports()
+    stats = load_stats()
     
     # Load Logo dynamically
     import base64
@@ -1317,9 +1368,31 @@ async def view_reports(key: str = Query("")):
             </div>
         </nav>
 
+        <div class="max-w-6xl mx-auto px-6 relative z-10 mb-10" id="stats-section">
+            <h2 class="text-xl font-bold text-white mb-4">Statistik Penggunaan</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1">
+                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Total Unduhan</p>
+                    <p class="text-4xl font-black text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">{stats.get('total', 0)}</p>
+                </div>
+                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-green-500/30 transition-all duration-300 hover:-translate-y-1">
+                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Hari Ini</p>
+                    <p class="text-4xl font-black text-green-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">{stats.get('today', 0)}</p>
+                </div>
+                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-pink-500/30 transition-all duration-300 hover:-translate-y-1">
+                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">TikTok</p>
+                    <p class="text-4xl font-black text-pink-400 drop-shadow-[0_0_15px_rgba(244,114,182,0.3)]">{stats.get('platforms', {{}}).get('tiktok', 0)}</p>
+                </div>
+                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1">
+                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Instagram</p>
+                    <p class="text-4xl font-black text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">{stats.get('platforms', {{}}).get('instagram', 0)}</p>
+                </div>
+            </div>
+        </div>
+
         <div class="max-w-6xl mx-auto px-6 relative z-10">
             <div id="reports-header" class="mb-8 flex items-center justify-between">
-                <h2 class="text-xl font-bold text-white">Daftar Laporan ({len(reports)})</h2>
+                <h2 class="text-xl font-bold text-white">Daftar Laporan Pengaduan ({len(reports)})</h2>
             </div>
             <div id="reports-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {cards_html}
@@ -1378,6 +1451,11 @@ async def view_reports(key: str = Query("")):
                         document.getElementById('reports-grid').innerHTML = newGrid;
                         document.getElementById('nav-content').innerHTML = doc.getElementById('nav-content').innerHTML;
                         document.getElementById('reports-header').innerHTML = doc.getElementById('reports-header').innerHTML;
+                    }}
+                    
+                    const newStats = doc.getElementById('stats-section');
+                    if (newStats) {{
+                        document.getElementById('stats-section').innerHTML = newStats.innerHTML;
                     }}
                 }} catch(e) {{
                     console.log("Sync error", e);
