@@ -681,9 +681,6 @@ export default function Home() {
               <span className="px-2.5 py-1 bg-white/10 text-white border border-white/20 rounded-lg">
                 X (Twitter) Bypass
               </span>
-              <span className="px-2.5 py-1 bg-[#00D05B]/10 text-[#00D05B] border border-[#00D05B]/20 rounded-lg">
-                Melon Ticket
-              </span>
             </div>
           </div>
 
