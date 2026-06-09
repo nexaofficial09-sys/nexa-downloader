@@ -103,7 +103,7 @@ def _get_best_audio_id(formats: list[dict]) -> str | None:
     """Find the best audio-only format ID."""
     audio_only = [
         f for f in formats 
-        if f.get("vcodec", "none") == "none" and f.get("acodec", "none") != "none"
+        if f.get("vcodec", "none") == "none" and (f.get("acodec", "none") != "none" or f.get("audio_ext", "none") != "none")
     ]
     if not audio_only:
         return None
@@ -131,6 +131,10 @@ def _extract_grouped_formats(info: dict) -> dict:
 
         vcodec = f.get("vcodec", "none")
         acodec = f.get("acodec", "none")
+        
+        if vcodec == "none" and f.get("audio_ext", "none") != "none" and acodec == "none":
+            acodec = "unknown"
+            
         height = f.get("height") or 0
         ext = f.get("ext", "mp4")
         filesize = f.get("filesize") or f.get("filesize_approx") or 0
