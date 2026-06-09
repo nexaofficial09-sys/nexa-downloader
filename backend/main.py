@@ -523,6 +523,7 @@ async def _fallback_rapidapi_instagram(url: str) -> JSONResponse:
                 images.append({
                     "id": f"slide_{idx+1}",
                     "url": media_url,
+                    "thumb": item.get("thumb", media_url),
                     "ext": "jpg"
                 })
                 
@@ -1292,7 +1293,7 @@ async def proxy_download(
             
         async with httpx.AsyncClient(follow_redirects=True) as client:
             try:
-                resp = await client.get(url, headers=headers)
+                resp = await client.get(url, headers=headers, timeout=30.0)
                 resp.raise_for_status()
             except httpx.HTTPStatusError as e:
                 from fastapi.responses import JSONResponse
