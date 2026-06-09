@@ -476,84 +476,92 @@ async def get_progress(task_id: str):
 async def root():
     return {"status": "ok", "service": "NEXA Downloader API v3"}
 
-
-def _fallback_instaloader(url: str) -> JSONResponse:
+async def _fallback_rapidapi_instagram(url: str) -> JSONResponse:
+    """Fallback using RapidAPI 'Instagram Downloader - Scraper' API."""
     try:
-        import instaloader
-        L = instaloader.Instaloader(quiet=True)
+        import httpx
         
-        shortcode_match = re.search(r"/(?:p|reel|tv)/([^/?#&]+)", url)
-        if not shortcode_match:
-            raise Exception("Shortcode not found")
-        
-        shortcode = shortcode_match.group(1)
-        post = instaloader.Post.from_shortcode(L.context, shortcode)
-        
+        api_url = "https://instagram-downloader-scraper-reels-igtv-posts-stories.p.rapidapi.com/scraper"
+        headers = {
+            "x-rapidapi-key": "612fa09e1emsh99939f18d8db811p155d6djsn9305c94d6c30",
+            "x-rapidapi-host": "instagram-downloader-scraper-reels-igtv-posts-stories.p.rapidapi.com"
+        }
+        querystring = {"url": url}
+
+        async with httpx.AsyncClient(verify=False) as client:
+            resp = await client.get(api_url, headers=headers, params=querystring, timeout=30.0)
+            
+        if resp.status_code != 200:
+            raise Exception(f"RapidAPI error {resp.status_code}: {resp.text}")
+            
+        data = resp.json().get("data", [])
+        if not data:
+            raise Exception("No data returned from RapidAPI")
+            
         images = []
-        if post.typename == 'GraphSidecar':
-            for idx, node in enumerate(post.get_sidecar_nodes()):
+        video_audio = []
+        
+        for idx, item in enumerate(data):
+            media_url = item.get("media")
+            is_video = item.get("isVideo", False)
+            
+            if not media_url:
+                continue
+                
+            if is_video:
+                video_audio.append({
+                    "format_id": f"insta_vid_{idx}",
+                    "url": media_url,
+                    "ext": "mp4",
+                    "height": 1080,
+                    "resolution": "HD",
+                    "filesize": 0,
+                    "vcodec": "unknown",
+                    "acodec": "unknown"
+                })
+            else:
                 images.append({
                     "id": f"slide_{idx+1}",
-                    "url": node.display_url,
+                    "url": media_url,
                     "ext": "jpg"
                 })
-        else:
-            images.append({
-                "id": "image_1",
-                "url": post.url,
-                "ext": "jpg"
-            })
-
-        grouped = {
-            "video_audio": [],
-            "video_only": [],
-            "audio_only": []
-        }
-        
-        if post.is_video and post.video_url:
-            grouped["video_audio"].append({
-                "format_id": "insta_vid",
-                "url": post.video_url,
-                "ext": "mp4",
-                "height": 1080,
-                "resolution": "HD",
-                "filesize": 0,
-                "filesize_label": "",
-                "vcodec": "avc1",
-                "acodec": "mp4a",
-                "needs_merge": False
-            })
-        
-        is_image_only = len(grouped["video_audio"]) == 0
-        
-        safe_title = "Instagram Post"
-        if post.caption:
-            safe_title = post.caption.replace('\n', ' ').replace('\r', '')[:50] + "..."
+                
+        if not images and not video_audio:
+            raise Exception("No valid media found in RapidAPI response")
+            
+        # Determine thumbnail and title
+        thumbnail = ""
+        if data and data[0].get("thumb"):
+            thumbnail = data[0].get("thumb")
+        elif images:
+            thumbnail = images[0]["url"]
+            
+        is_image_only = len(video_audio) == 0
         
         return JSONResponse(content={
             "success": True,
-            "title": safe_title,
-            "thumbnail": images[0]["url"] if images else "",
+            "title": "Instagram Post",
+            "thumbnail": thumbnail,
             "duration": None,
             "platform": "instagram",
             "original_url": url,
             "needs_proxy": True,
             "is_image_only": is_image_only,
-            "formats": grouped,
+            "formats": {
+                "video_audio": video_audio,
+                "video_only": [],
+                "audio_only": []
+            },
             "images": images
         })
-    
-    except Exception as insta_exc:
-        logger.error("Instaloader fallback failed: %s", insta_exc)
-        if "login" in str(insta_exc).lower() or "401" in str(insta_exc) or "403" in str(insta_exc) or "login_required" in str(insta_exc).lower():
-            raise HTTPException(
-                status_code=422, 
-                detail="Konten ini memerlukan login / bersifat privat. Akses publik diblokir oleh Instagram."
-            )
+
+    except Exception as e:
+        logger.error("RapidAPI fallback error: %s", e)
         raise HTTPException(
             status_code=422, 
-            detail="Mohon maaf, postingan ini gagal diproses. URL tidak valid atau diblokir oleh Instagram."
+            detail="Gagal mengunduh dari Instagram. (Mungkin link salah atau server API sedang penuh)"
         )
+
 
 import html as html_lib
 
@@ -971,11 +979,11 @@ async def download(request: Request, url: str = Query(default=None)):
 
         ig_error_indicators = ["no video", "empty media", "not granting access", "429", "too many requests", "unable to download webpage"]
         if "instagram.com" in url.lower() and any(ind in msg.lower() for ind in ig_error_indicators):
-            # Coba jalur fallback (embed / instaloader) jika semua proxy Gagal
+            # Coba jalur fallback (embed / RapidAPI) jika semua proxy Gagal
             ig_resp = await _fallback_instagram_image(url)
             if ig_resp:
                 return ig_resp
-            return _fallback_instaloader(url)
+            return await _fallback_rapidapi_instagram(url)
             
         if "tiktok.com" in url.lower() and ("no video" in msg.lower() or "empty media" in msg.lower()):
             tk_resp = await _fallback_tiktok(url)
