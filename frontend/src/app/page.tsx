@@ -665,23 +665,7 @@ export default function Home() {
               di-upgrade dengan Bypass Anti-Bot terbaru untuk hasil yang lebih
               maksimal.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-2 lg:gap-3 text-[10px] lg:text-xs font-bold text-slate-400 uppercase tracking-wider">
-              <span className="px-2.5 py-1 bg-white/[0.03] border border-white/[0.05] rounded-lg">
-                YT Shorts
-              </span>
-              <span className="px-2.5 py-1 bg-white/[0.03] border border-white/[0.05] rounded-lg">
-                TikTok Slide
-              </span>
-              <span className="px-2.5 py-1 bg-white/[0.03] border border-white/[0.05] rounded-lg">
-                IG Reels
-              </span>
-              <span className="px-2.5 py-1 bg-[#1877F2]/10 text-[#1877F2] border border-[#1877F2]/20 rounded-lg">
-                FB Album Fix
-              </span>
-              <span className="px-2.5 py-1 bg-white/10 text-white border border-white/20 rounded-lg">
-                X (Twitter) Bypass
-              </span>
-            </div>
+
           </div>
 
           {/* ---- INPUT BAR ---- */}
