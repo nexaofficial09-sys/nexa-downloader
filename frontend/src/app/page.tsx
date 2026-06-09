@@ -40,7 +40,7 @@ interface ExtractResult {
   images: ExtractedImage[];
 }
 
-const API_BASE = "http://103.30.195.243:8000";
+const API_BASE = "https://api.nexalabs.my.id";
 
 // ---------------------------------------------------------------------------
 // Helpers
