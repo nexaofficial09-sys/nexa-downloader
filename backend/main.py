@@ -935,12 +935,13 @@ async def download(request: Request, url: str = Query(default=None)):
     try:
         def _extract():
             is_ig = "instagram.com" in url.lower()
-            max_retries = 5 if is_ig else 1
+            max_retries = 3 if is_ig else 1
             last_exc = None
             
             for attempt in range(max_retries):
                 opts = dict(ydl_opts)
                 if is_ig:
+                    opts["socket_timeout"] = 5 # Kurangi timeout agar tidak membuat Frontend Hang (Failed to fetch)
                     proxy = get_random_proxy()
                     if proxy:
                         opts["proxy"] = proxy
