@@ -174,10 +174,7 @@ def _extract_grouped_formats(info: dict) -> dict:
         
         platform = (info.get("extractor") or info.get("extractor_key") or "").lower()
         
-        # X / Twitter Fix: The native .mp4 formats always contain audio, but yt-dlp sometimes tags them as acodec="none"
-        if "twitter" in platform and ext == "mp4" and vcodec != "none" and acodec == "none":
-            acodec = "mp4a"
-            fmt_data["acodec"] = acodec
+
 
         # AUDIO ONLY
         if vcodec == "none" and acodec != "none":
