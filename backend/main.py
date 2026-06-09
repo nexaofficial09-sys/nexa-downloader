@@ -635,34 +635,21 @@ async def _fallback_twitter(url: str):
                         "filesize": 0,
                         "filesize_label": "Unknown",
                         "vcodec": "avc",
-        for idx, media_url in enumerate(data.get("mediaURLs", [])):
-            if "video.twimg.com" in media_url or ".mp4" in media_url:
-                video_formats.append({
-                    "format_id": f"vxtwitter_vid_{idx}",
-                    "url": media_url,
-                    "ext": "mp4",
-                    "resolution": "HD",
-                    "filesize_label": "",
-                    "vcodec": "avc1",
-                    "acodec": "mp4a",
-                    "needs_merge": False
-                })
-            else:
-                images.append({
-                    "id": f"image_{idx+1}",
-                    "url": media_url,
-                    "ext": "jpg"
-                })
-
+                        "acodec": "mp4a" if media.get("type") == "video" else "none",
+                        "needs_merge": False
+                    })
+                    
+        is_image_only = len(video_formats) == 0
+        
         return JSONResponse(content={
             "success": True,
-            "title": data.get("text", "Twitter Post").replace('\n', ' ')[:80],
-            "thumbnail": images[0]["url"] if images else "",
+            "title": title.replace('\n', ' ')[:80],
+            "thumbnail": thumbnail or "",
             "duration": None,
             "platform": "twitter",
             "original_url": url,
-            "needs_proxy": False,
-            "is_image_only": len(video_formats) == 0,
+            "needs_proxy": True,
+            "is_image_only": is_image_only,
             "formats": {
                 "video_audio": video_formats,
                 "video_only": [],
