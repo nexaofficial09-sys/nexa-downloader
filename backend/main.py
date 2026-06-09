@@ -1253,6 +1253,9 @@ async def view_reports(key: str = Query("")):
     
     reports = _load_reports()
     stats = load_stats()
+    platform_stats = stats.get('platforms', {})
+    tiktok_downloads = platform_stats.get('tiktok', 0)
+    ig_downloads = platform_stats.get('instagram', 0)
     
     # Load Logo dynamically
     import base64
@@ -1381,11 +1384,11 @@ async def view_reports(key: str = Query("")):
                 </div>
                 <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-pink-500/30 transition-all duration-300 hover:-translate-y-1">
                     <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">TikTok</p>
-                    <p class="text-4xl font-black text-pink-400 drop-shadow-[0_0_15px_rgba(244,114,182,0.3)]">{stats.get('platforms', {{}}).get('tiktok', 0)}</p>
+                    <p class="text-4xl font-black text-pink-400 drop-shadow-[0_0_15px_rgba(244,114,182,0.3)]">{tiktok_downloads}</p>
                 </div>
                 <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1">
                     <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Instagram</p>
-                    <p class="text-4xl font-black text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">{stats.get('platforms', {{}}).get('instagram', 0)}</p>
+                    <p class="text-4xl font-black text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">{ig_downloads}</p>
                 </div>
             </div>
         </div>
