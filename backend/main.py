@@ -1326,6 +1326,9 @@ async def view_reports(key: str = Query("")):
     platform_stats = stats.get('platforms', {})
     tiktok_downloads = platform_stats.get('tiktok', 0)
     ig_downloads = platform_stats.get('instagram', 0)
+    yt_downloads = platform_stats.get('youtube', 0)
+    tw_downloads = platform_stats.get('twitter', 0)
+    fb_downloads = platform_stats.get('facebook', 0)
     
     # Load Logo dynamically
     import base64
@@ -1443,7 +1446,7 @@ async def view_reports(key: str = Query("")):
 
         <div class="max-w-6xl mx-auto px-6 relative z-10 mb-10" id="stats-section">
             <h2 class="text-xl font-bold text-white mb-4">Statistik Penggunaan</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4" id="stats-grid">
                 <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1">
                     <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Total Unduhan</p>
                     <p class="text-4xl font-black text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">{stats.get('total', 0)}</p>
@@ -1459,6 +1462,18 @@ async def view_reports(key: str = Query("")):
                 <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1">
                     <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Instagram</p>
                     <p class="text-4xl font-black text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">{ig_downloads}</p>
+                </div>
+                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-red-500/30 transition-all duration-300 hover:-translate-y-1">
+                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">YouTube</p>
+                    <p class="text-4xl font-black text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.3)]">{yt_downloads}</p>
+                </div>
+                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-slate-400/30 transition-all duration-300 hover:-translate-y-1">
+                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Twitter/X</p>
+                    <p class="text-4xl font-black text-slate-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">{tw_downloads}</p>
+                </div>
+                <div class="glass-dark border border-white/10 rounded-2xl p-5 text-center hover:border-blue-600/30 transition-all duration-300 hover:-translate-y-1">
+                    <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Facebook</p>
+                    <p class="text-4xl font-black text-blue-500 drop-shadow-[0_0_15px_rgba(37,99,235,0.3)]">{fb_downloads}</p>
                 </div>
             </div>
         </div>
