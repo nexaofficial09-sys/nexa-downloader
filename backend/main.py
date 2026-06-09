@@ -560,10 +560,7 @@ async def _fallback_rapidapi_instagram(url: str) -> JSONResponse:
 
     except Exception as e:
         logger.error("RapidAPI fallback error: %s", e)
-        raise HTTPException(
-            status_code=422, 
-            detail="Gagal mengunduh dari Instagram. (Mungkin link salah atau server API sedang penuh)"
-        )
+        return None
 
 
 import html as html_lib
@@ -989,11 +986,19 @@ async def download(request: Request, url: str = Query(default=None)):
 
         ig_error_indicators = ["no video", "empty media", "not granting access", "429", "too many requests", "unable to download webpage"]
         if "instagram.com" in url.lower() and any(ind in msg.lower() for ind in ig_error_indicators):
-            # Coba jalur fallback (embed / RapidAPI) jika semua proxy Gagal
+            # Coba jalur fallback (RapidAPI lalu embed) jika semua proxy Gagal
+            rap_resp = await _fallback_rapidapi_instagram(url)
+            if rap_resp:
+                return rap_resp
+            
             ig_resp = await _fallback_instagram_image(url)
             if ig_resp:
                 return ig_resp
-            return await _fallback_rapidapi_instagram(url)
+                
+            raise HTTPException(
+                status_code=422, 
+                detail="Gagal mengunduh dari Instagram. (Mungkin link salah atau server API sedang penuh)"
+            )
             
         if "tiktok.com" in url.lower() and ("no video" in msg.lower() or "empty media" in msg.lower()):
             tk_resp = await _fallback_tiktok(url)
@@ -1078,9 +1083,13 @@ async def download(request: Request, url: str = Query(default=None)):
         
         # If yt-dlp returned an empty playlist for Instagram, fallback to instaloader
         if is_image_only and not images and "instagram.com" in url.lower():
-            return _fallback_instaloader(url)
+            rap_resp = await _fallback_rapidapi_instagram(url)
+            if rap_resp: return rap_resp
             
-        if is_image_only and not images:
+            ig_resp = await _fallback_instagram_image(url)
+            if ig_resp:
+                return ig_resp
+            
             raise HTTPException(
                 status_code=422,
                 detail="Post tidak valid atau format tidak didukung."
