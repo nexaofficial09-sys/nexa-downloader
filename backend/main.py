@@ -901,7 +901,8 @@ async def download(request: Request, url: str = Query(default=None)):
         if "DRM protected" in msg or "This video is DRM protected" in msg or "This video is not available" in msg or "UNPLAYABLE" in msg:
             raise HTTPException(status_code=400, detail="Video ini dilindungi oleh sistem anti-bot YouTube (BotGuard/SABR) atau hak cipta (DRM), sehingga tidak dapat didownload saat ini.")
 
-        if "instagram.com" in url.lower() and ("no video" in msg.lower() or "empty media" in msg.lower() or "not granting access" in msg.lower()):
+        ig_error_indicators = ["no video", "empty media", "not granting access", "429", "too many requests", "unable to download webpage"]
+        if "instagram.com" in url.lower() and any(ind in msg.lower() for ind in ig_error_indicators):
             ig_resp = await _fallback_instagram_image(url)
             if ig_resp:
                 return ig_resp
