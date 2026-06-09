@@ -1503,12 +1503,15 @@ async def view_reports(key: str = Query("")):
     
     if not reports:
         cards_html = '''
-        <div class="col-span-1 md:col-span-2 text-center py-16 bg-white/[0.03] rounded-3xl border border-white/10 glass-dark">
-            <svg class="mx-auto h-16 w-16 text-slate-500 mb-5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-            </svg>
-            <h3 class="text-xl font-bold text-white mb-2">Belum Ada Laporan</h3>
-            <p class="text-slate-400">Saat ini belum ada pengguna yang mengirimkan kendala.</p>
+        <div class="col-span-1 md:col-span-2 flex flex-col items-center justify-center py-20 bg-white/[0.02] rounded-3xl border border-white/5 glass-dark relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent"></div>
+            <div class="w-20 h-20 bg-white/[0.03] rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] border border-white/10 relative z-10">
+                <svg class="h-10 w-10 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2 relative z-10 text-glow">Belum Ada Laporan</h3>
+            <p class="text-slate-400 relative z-10">Sistem berjalan dengan baik. Tidak ada keluhan yang masuk.</p>
         </div>
         '''
     else:
@@ -1616,39 +1619,47 @@ async def view_reports(key: str = Query("")):
                 </div>
 
                 <!-- Stats Grid -->
-                <div class="col-span-1 lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                <div class="col-span-1 lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div class="col-span-2 glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Total Keseluruhan</p>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="p-1.5 bg-blue-500/20 rounded-md text-blue-400"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg></span>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Total Keseluruhan</p>
+                        </div>
                         <p class="text-4xl font-black text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">{stats.get('total', 0)}</p>
                     </div>
-                    <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-green-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                    <div class="col-span-2 sm:col-span-1 glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-green-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
                         <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Hari Ini</p>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="p-1.5 bg-green-500/20 rounded-md text-green-400"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Hari Ini</p>
+                        </div>
                         <p class="text-4xl font-black text-green-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">{stats.get('today', 0)}</p>
                     </div>
                     <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-pink-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
                         <div class="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest">TikTok</p>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-pink-400"></span> TikTok</p>
                         <p class="text-3xl font-black text-pink-400 drop-shadow-[0_0_15px_rgba(244,114,182,0.3)]">{tiktok_downloads}</p>
                     </div>
                     <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
                         <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Instagram</p>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-400"></span> Instagram</p>
                         <p class="text-3xl font-black text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">{ig_downloads}</p>
                     </div>
                     <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-red-500/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
                         <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest">YouTube</p>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500"></span> YouTube</p>
                         <p class="text-3xl font-black text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.3)]">{yt_downloads}</p>
                     </div>
                     <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-blue-600/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest flex justify-between">
-                            <span>Facebook</span>
-                            <span class="text-slate-500">| Twitter: <span class="text-slate-300">{tw_downloads}</span></span>
-                        </p>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Facebook</p>
                         <p class="text-3xl font-black text-blue-500 drop-shadow-[0_0_15px_rgba(37,99,235,0.3)]">{fb_downloads}</p>
+                    </div>
+                    <div class="glass-dark border border-white/10 rounded-2xl p-5 flex flex-col justify-center hover:border-slate-300/30 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-slate-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-widest flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-300"></span> Twitter/X</p>
+                        <p class="text-3xl font-black text-slate-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">{tw_downloads}</p>
                     </div>
                 </div>
             </div>
@@ -1761,7 +1772,16 @@ async def view_reports(key: str = Query("")):
                         maintainAspectRatio: false,
                         cutout: '75%',
                         plugins: {{
-                            legend: {{ display: false }},
+                            legend: {{ 
+                                display: true, 
+                                position: 'right',
+                                labels: {{
+                                    color: '#94a3b8',
+                                    font: {{ family: 'Inter', size: 10, weight: 'bold' }},
+                                    usePointStyle: true,
+                                    padding: 15
+                                }}
+                            }},
                             tooltip: {{
                                 backgroundColor: 'rgba(15, 23, 42, 0.9)',
                                 titleColor: '#fff',
