@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "NEXA Downloader — Download Videos, Audio & Images",
+  title: "NEXA Downloader",
   description:
     "Download high-quality videos, audio, and image carousels from YouTube, TikTok, Instagram, Twitter/X, and Facebook. Fast, free, no registration.",
   keywords: [
