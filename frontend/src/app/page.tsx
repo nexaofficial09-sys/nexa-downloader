@@ -27,6 +27,12 @@ interface ExtractedImage {
   url: string;
   ext: string;
 }
+interface ExtractedSubtitle {
+  language: string;
+  url: string;
+  ext: string;
+  is_auto: boolean;
+}
 interface ExtractResult {
   success: boolean;
   title: string;
@@ -38,6 +44,7 @@ interface ExtractResult {
   is_image_only: boolean;
   formats: FormatGroup;
   images: ExtractedImage[];
+  subtitles?: ExtractedSubtitle[];
 }
 
 const API_BASE = "https://api.nexalabs.my.id";
@@ -204,7 +211,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [result, setResult] = useState<ExtractResult | null>(null);
   const [activeTab, setActiveTab] = useState<
-    "video_audio" | "video_only" | "audio_only" | "images"
+    "video_audio" | "video_only" | "audio_only" | "images" | "subtitles"
   >("video_audio");
   
   const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -653,6 +660,64 @@ export default function Home() {
   };
 
   // -----------------------------------------------------------------------
+  // Subtitles
+  // -----------------------------------------------------------------------
+  const renderSubtitles = () => {
+    if (!result?.subtitles || result.subtitles.length === 0) {
+      return (
+        <div className="py-12 lg:py-16 text-center fade-in-up">
+          <svg
+            className="w-8 h-8 lg:w-10 lg:h-10 mx-auto mb-3 text-slate-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.36 5.47.411.397.64.95.64 1.53v1.5H9c.58 0 1.133-.23 1.53-.64.938-.96 2.22-1.5 3.47-1.5z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.25 10.5h7.5m-7.5 3h4.5" />
+          </svg>
+          <p className="text-xs lg:text-sm text-slate-500">
+            No subtitles available.
+          </p>
+        </div>
+      );
+    }
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 fade-in-up">
+        {result.subtitles.map((sub, idx) => (
+          <div
+            key={idx}
+            className="group relative bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.05] hover:border-blue-500/30 rounded-xl lg:rounded-2xl p-4 lg:p-5 transition-all duration-300"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 lg:gap-3">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-xs lg:text-sm font-bold">{sub.ext.toUpperCase()}</span>
+                </div>
+                <div>
+                  <h4 className="text-sm lg:text-base font-bold text-white group-hover:text-blue-400 transition-colors line-clamp-1">
+                    {sub.language}
+                  </h4>
+                  <p className="text-[10px] lg:text-xs text-slate-400">Subtitle Track</p>
+                </div>
+              </div>
+            </div>
+            <a
+              href={`${API_BASE}/api/proxy?url=${encodeURIComponent(sub.url)}&filename=${encodeURIComponent(`${sanitizeFilename(result.title)}_${sub.language}.${sub.ext}`)}&platform=${encodeURIComponent(result.platform || "generic")}&is_image=false`}
+              download
+              className="w-full py-2.5 lg:py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 bg-gradient-to-r from-blue-600 to-cyan-500 text-white btn-glow hover:opacity-90"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download {sub.ext}
+            </a>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // -----------------------------------------------------------------------
   // MAIN RENDER
   // -----------------------------------------------------------------------
   return (
@@ -1037,6 +1102,23 @@ export default function Home() {
                     </span>
                   </button>
                 )}
+                {result.subtitles && result.subtitles.length > 0 && (
+                  <button
+                    onClick={() => setActiveTab("subtitles")}
+                    className={`shrink-0 px-2.5 md:px-3 lg:px-4 py-2 lg:py-2.5 rounded-md lg:rounded-lg text-[11px] md:text-xs lg:text-sm font-semibold transition-all duration-200 ${
+                      activeTab === "subtitles"
+                        ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-sm btn-glow"
+                        : "text-slate-500 hover:text-slate-300"
+                    }`}
+                  >
+                    Subtitles
+                    <span
+                      className={`ml-1 lg:ml-1.5 px-1 lg:px-1.5 py-0.5 rounded text-[9px] lg:text-[10px] font-bold ${activeTab === "subtitles" ? "bg-white/20 text-white" : "bg-white/[0.05] text-slate-500"}`}
+                    >
+                      {result.subtitles.length}
+                    </span>
+                  </button>
+                )}
               </div>
 
               <div className="min-h-[180px] lg:min-h-[220px]">
@@ -1047,6 +1129,7 @@ export default function Home() {
                 {activeTab === "audio_only" &&
                   renderFormatGrid(result.formats.audio_only)}
                 {activeTab === "images" && renderImages()}
+                {activeTab === "subtitles" && renderSubtitles()}
               </div>
 
               {/* Reset */}

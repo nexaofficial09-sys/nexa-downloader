@@ -365,12 +365,12 @@ def _extract_images(info: dict) -> list[dict]:
                 })
         return images
     
-    # Single image fallback
+    # Single image fallback or Video Cover
     if info.get("thumbnails"):
         # Thumbnails are usually sorted by quality in yt-dlp
         best_thumb = info["thumbnails"][-1]
         images.append({
-            "id": "image_1",
+            "id": "cover_image",
             "url": best_thumb["url"],
             "ext": "jpg"
         })
@@ -384,15 +384,17 @@ def _extract_subtitles(info: dict) -> list[dict]:
     # Process manual subtitles first
     manual_subs = info.get("subtitles") or {}
     for lang, formats in manual_subs.items():
-        vtt_format = next((f for f in formats if f.get("ext") == "vtt"), None)
-        if not vtt_format and formats:
-            vtt_format = formats[0]
+        srt_format = next((f for f in formats if f.get("ext") == "srt"), None)
+        if not srt_format:
+            srt_format = next((f for f in formats if f.get("ext") == "vtt"), None)
+        if not srt_format and formats:
+            srt_format = formats[0]
             
-        if vtt_format and vtt_format.get("url"):
+        if srt_format and srt_format.get("url"):
             subs.append({
                 "language": lang.upper(),
-                "url": vtt_format["url"],
-                "ext": vtt_format.get("ext", "vtt"),
+                "url": srt_format["url"],
+                "ext": srt_format.get("ext", "srt"),
                 "is_auto": False
             })
             
@@ -403,15 +405,17 @@ def _extract_subtitles(info: dict) -> list[dict]:
         if any(s["language"] == lang.upper() for s in subs):
             continue
             
-        vtt_format = next((f for f in formats if f.get("ext") == "vtt"), None)
-        if not vtt_format and formats:
-            vtt_format = formats[0]
+        srt_format = next((f for f in formats if f.get("ext") == "srt"), None)
+        if not srt_format:
+            srt_format = next((f for f in formats if f.get("ext") == "vtt"), None)
+        if not srt_format and formats:
+            srt_format = formats[0]
             
-        if vtt_format and vtt_format.get("url"):
+        if srt_format and srt_format.get("url"):
             subs.append({
                 "language": f"{lang.upper()} (Auto)",
-                "url": vtt_format["url"],
-                "ext": vtt_format.get("ext", "vtt"),
+                "url": srt_format["url"],
+                "ext": srt_format.get("ext", "srt"),
                 "is_auto": True
             })
             
@@ -536,6 +540,13 @@ async def _fallback_rapidapi_instagram(url: str) -> JSONResponse:
             thumbnail = data[0].get("thumb")
         elif images:
             thumbnail = images[0]["url"]
+            
+        if not images and thumbnail:
+            images.append({
+                "id": "cover_image",
+                "url": thumbnail,
+                "ext": "jpg"
+            })
             
         is_image_only = len(video_audio) == 0
         
@@ -815,13 +826,20 @@ async def _fallback_instagram_image(url: str) -> Optional[JSONResponse]:
             
         img_url = html_lib.unescape(img_match.group(1)).replace('&amp;', '&').replace('\\/', '/')
         
-        # Extract title
+        # Extract title (prefer description for captions)
+        desc_match = re.search(r'<meta[^>]*property="og:description"[^>]*content="([^"]+)"', html_content)
         title_match = re.search(r'<meta[^>]*property="og:title"[^>]*content="([^"]+)"', html_content)
-        if not title_match:
-            title_match = re.search(r'<meta[^>]*content="([^"]+)"[^>]*property="og:title"', html_content)
+        
+        if desc_match:
+            title = html_lib.unescape(desc_match.group(1))
+            # Remove "Name on Instagram: " prefix if exists
+            title = re.sub(r'^.*?on Instagram: "(.*?)"$', r'\1', title)
+        elif title_match:
+            title = html_lib.unescape(title_match.group(1))
+        else:
+            title = "Instagram Post"
             
-        title = title_match.group(1) if title_match else "Instagram Post"
-        title = html_lib.unescape(title).replace('\n', ' ').replace('\r', '')[:80]
+        title = title.replace('\n', ' ').replace('\r', '')[:80]
         
         images = [{
             "id": "slide_1",
@@ -944,7 +962,6 @@ async def download(request: Request, url: str = Query(default=None)):
         "extract_flat": False,
         "socket_timeout": 15,
         "source_address": "0.0.0.0",  # Force IPv4 to prevent severe IPv6 timeout hangs
-        "js_runtimes": {"deno": {"path": "d:/Web/NEXA Downloader/backend/deno.exe"}},
     }
 
     try:
