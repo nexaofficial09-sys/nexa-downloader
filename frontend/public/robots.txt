@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dl.nexalabs.my.id/sitemap.xml
+
+# Prevent crawling of API endpoints
+User-agent: *
+Disallow: /api/

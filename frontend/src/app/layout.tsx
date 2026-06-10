@@ -9,18 +9,36 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "NEXA Downloader",
+  title: "NEXA Downloader — Download Video dari Semua Platform",
   description:
     "Download high-quality videos, audio, and image carousels from YouTube, TikTok, Instagram, Twitter/X, and Facebook. Fast, free, no registration.",
   keywords: [
     "video downloader", "tiktok downloader", "youtube downloader",
-    "instagram downloader", "media downloader",
+    "instagram downloader", "media downloader", "download video gratis",
+    "download tiktok tanpa watermark", "unduh video youtube",
   ],
   authors: [{ name: "NEXA" }],
+  metadataBase: new URL("https://dl.nexalabs.my.id"),
   openGraph: {
-    title: "NEXA Downloader",
-    description: "Download videos from any platform instantly.",
+    title: "NEXA Downloader — Download Video dari Semua Platform",
+    description: "Download video, audio, dan foto dari YouTube, TikTok, Instagram, Twitter/X, dan Facebook. Gratis, cepat, tanpa registrasi.",
     type: "website",
+    siteName: "NEXA Downloader",
+    url: "https://dl.nexalabs.my.id",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1024,
+        height: 1023,
+        alt: "NEXA Downloader Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NEXA Downloader — Download Video dari Semua Platform",
+    description: "Download video, audio, dan foto dari YouTube, TikTok, Instagram, Twitter/X, dan Facebook. Gratis, cepat, tanpa registrasi.",
+    images: ["/logo.png"],
   },
 };
 

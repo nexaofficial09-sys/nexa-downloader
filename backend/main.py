@@ -264,14 +264,14 @@ def _extract_grouped_formats(info: dict) -> dict:
         if vcodec != "none" and acodec == "none":
             # Store best video-only for this height
             ex = video_only_map.get(height)
-            if not ex or (ext == "mp4" and ex["ext"] != "mp4") or (f.get("tbr", 0) > f.get("tbr", 0)):
+            if not ex or (ext == "mp4" and ex["ext"] != "mp4") or (f.get("tbr", 0) > ex.get("tbr", 0)):
                 video_only_map[height] = fmt_data
                 
         # VIDEO + AUDIO (Native)
         if vcodec != "none" and acodec != "none":
             key = f"{height}_{lang}"
             ex = video_audio_map.get(key)
-            if not ex or (ext == "mp4" and ex["ext"] != "mp4") or (f.get("tbr", 0) > f.get("tbr", 0)):
+            if not ex or (ext == "mp4" and ex["ext"] != "mp4") or (f.get("tbr", 0) > ex.get("tbr", 0)):
                 if lang_label:
                     fmt_data["resolution"] += lang_label
                 video_audio_map[key] = fmt_data
@@ -566,7 +566,8 @@ async def _fallback_rapidapi_instagram(url: str) -> JSONResponse:
                 "video_only": [],
                 "audio_only": []
             },
-            "images": images
+            "images": images,
+            "subtitles": []
         })
 
     except Exception as e:
@@ -627,7 +628,8 @@ async def _fallback_generic_opengraph(url: str, platform: str = "generic") -> JS
                 "video_only": [],
                 "audio_only": []
             },
-            "images": images
+            "images": images,
+            "subtitles": []
         })
     except Exception as e:
         logger.error("Generic fallback failed: %s", e)
@@ -863,7 +865,8 @@ async def _fallback_instagram_image(url: str) -> Optional[JSONResponse]:
                 "video_only": [],
                 "audio_only": []
             },
-            "images": images
+            "images": images,
+            "subtitles": []
         })
     except Exception as e:
         logger.error("Instagram OpenGraph fallback error: %s", e)
@@ -921,7 +924,8 @@ async def _fallback_facebook(url: str) -> JSONResponse:
                 "video_only": [],
                 "audio_only": []
             },
-            "images": images
+            "images": images,
+            "subtitles": []
         })
     except Exception as fb_exc:
         import traceback
@@ -949,6 +953,9 @@ async def download(request: Request, url: str = Query(default=None)):
     if "tiktok.com" in url.lower() and "/photo/" in url.lower():
         url = url.replace("/photo/", "/video/")
 
+    # Use proxy for TikTok to bypass IP blocks
+    is_tiktok = "tiktok.com" in url.lower()
+
     # Use fast vxtwitter API for Twitter URLs to bypass yt-dlp blocks and extract multi-image tweets
     if any(domain in url.lower() for domain in ["twitter.com", "x.com", "t.co"]) and "/status/" in url.lower():
         tw_resp = await _fallback_twitter(url)
@@ -963,6 +970,13 @@ async def download(request: Request, url: str = Query(default=None)):
         "socket_timeout": 15,
         "source_address": "0.0.0.0",  # Force IPv4 to prevent severe IPv6 timeout hangs
     }
+
+    # Add proxy for TikTok to bypass IP blocks
+    if is_tiktok:
+        tiktok_proxy = get_random_proxy()
+        if tiktok_proxy:
+            ydl_opts["proxy"] = tiktok_proxy
+            logger.info(f"Using proxy {tiktok_proxy} for TikTok")
 
     try:
         def _extract():

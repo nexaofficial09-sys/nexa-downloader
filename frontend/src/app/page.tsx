@@ -809,7 +809,7 @@ export default function Home() {
                 {url && !loading && (
                   <button
                     type="button"
-                    onClick={() => setUrl("")}
+                    onClick={() => { setUrl(""); setResult(null); setError(""); }}
                     className="p-2 lg:p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all active:scale-95 flex items-center justify-center shrink-0"
                     title="Clear link"
                     aria-label="Clear link"
@@ -1512,10 +1512,23 @@ export default function Home() {
               </span>
             </p>
             <p className="text-slate-500 text-[10px] lg:text-xs">
-              Proudly designed and engineered independently.
+              © 2026 NEXA Downloader. All rights reserved.
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <a
+              href="/privacy-policy"
+              className="text-slate-500 hover:text-blue-400 text-[10px] lg:text-xs font-semibold transition-colors"
+            >
+              Kebijakan Privasi
+            </a>
+            <span className="text-slate-700">|</span>
+            <a
+              href="/terms"
+              className="text-slate-500 hover:text-blue-400 text-[10px] lg:text-xs font-semibold transition-colors"
+            >
+              Syarat & Ketentuan
+            </a>
             <img
               src="/logo.png"
               alt="NEXA"

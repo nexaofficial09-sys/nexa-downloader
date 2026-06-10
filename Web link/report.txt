@@ -1,0 +1,1 @@
+https://api.nexalabs.my.id/api/reports?key=nexaadmin123
