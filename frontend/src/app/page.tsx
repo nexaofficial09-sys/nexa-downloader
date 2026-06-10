@@ -1001,99 +1001,77 @@ export default function Home() {
           <div className="glass-dark input-glow rounded-xl lg:rounded-2xl p-1.5 lg:p-2 mb-5 lg:mb-8 fade-in-up">
             <form
               onSubmit={handleSubmit}
-              className="relative flex items-center w-full"
+              className="relative flex flex-col sm:flex-row items-center w-full gap-2 sm:gap-0"
             >
-              <div className="absolute left-3 lg:left-5 text-blue-400/60 pointer-events-none">
-                <svg
-                  className="w-4 h-4 lg:w-5 lg:h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                  />
-                </svg>
-              </div>
-              <input
-                type="url"
-                placeholder={t.pasteLabel}
-                required
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                disabled={loading}
-                className="w-full bg-transparent text-white placeholder-slate-500 text-sm lg:text-base xl:text-lg pl-10 lg:pl-14 pr-[140px] lg:pr-[210px] py-3.5 lg:py-4 xl:py-5 outline-none disabled:opacity-50 rounded-xl"
-              />
-              <div className="absolute right-1.5 lg:right-2 top-1.5 lg:top-2 bottom-1.5 lg:bottom-2 flex items-center gap-1.5 lg:gap-3">
+              <div className="relative w-full flex items-center">
+                <div className="absolute left-3 lg:left-5 text-blue-400/60 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 lg:w-5 lg:h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="url"
+                  placeholder={t.pasteLabel}
+                  required
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  disabled={loading}
+                  className="w-full bg-white/[0.02] sm:bg-transparent border border-white/[0.05] sm:border-transparent text-white placeholder-slate-500 text-sm lg:text-base xl:text-lg pl-10 lg:pl-14 pr-10 sm:pr-[140px] lg:pr-[210px] py-3.5 lg:py-4 xl:py-5 outline-none disabled:opacity-50 rounded-xl focus:border-white/10 sm:focus:border-transparent transition-colors"
+                />
                 {url && !loading && (
                   <button
                     type="button"
                     onClick={() => { setUrl(""); setResult(null); setError(""); }}
-                    className="p-2 lg:p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all active:scale-95 flex items-center justify-center shrink-0"
-                    title="Clear link"
-                    aria-label="Clear link"
+                    className="absolute right-2 sm:hidden p-2 text-slate-400 hover:text-white rounded-full transition-all"
                   >
-                    <svg
-                      className="w-4 h-4 lg:w-5 lg:h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              
+              <div className="w-full sm:w-auto sm:absolute sm:right-1.5 lg:right-2 sm:top-1.5 lg:top-2 sm:bottom-1.5 lg:bottom-2 flex items-center gap-1.5 lg:gap-3">
+                {url && !loading && (
+                  <button
+                    type="button"
+                    onClick={() => { setUrl(""); setResult(null); setError(""); }}
+                    className="hidden sm:flex p-2 lg:p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all active:scale-95 items-center justify-center shrink-0"
+                    title="Clear link"
+                  >
+                    <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 )}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="h-full px-5 lg:px-7 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold rounded-lg lg:rounded-xl hover:from-blue-500 hover:to-cyan-400 active:scale-[0.97] transition-all disabled:opacity-60 btn-glow flex items-center gap-1.5 lg:gap-2 text-xs lg:text-base shrink-0"
+                  className="w-full sm:w-auto h-12 sm:h-full px-5 lg:px-7 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold rounded-lg lg:rounded-xl hover:from-blue-500 hover:to-cyan-400 active:scale-[0.97] transition-all disabled:opacity-60 btn-glow flex items-center justify-center gap-1.5 lg:gap-2 text-sm lg:text-base shrink-0"
                 >
                   {loading ? (
                     <>
-                      <svg
-                        className="animate-spin w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
+                      <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      <span className="hidden lg:inline">Extracting…</span>
+                      <span className="hidden sm:inline">Extracting...</span>
                     </>
                   ) : (
                     <>
                       Extract
-                      <svg
-                        className="w-3.5 h-3.5 lg:w-4 lg:h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2.5}
-                          d="M14 5l7 7m0 0l-7 7m7-7H3"
-                        />
+                      <svg className="w-3.5 h-3.5 lg:w-4 lg:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
                     </>
                   )}
@@ -1262,7 +1240,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex overflow-x-auto hide-scrollbar gap-1 mb-4 lg:mb-6 p-1 bg-white/[0.03] rounded-lg lg:rounded-xl border border-white/[0.04]">
+              <div className="flex overflow-x-auto hide-scrollbar gap-1 md:gap-2 mb-4 lg:mb-6 p-1.5 bg-white/[0.03] rounded-lg lg:rounded-xl border border-white/[0.04] scroll-smooth">
                 {!result.is_image_only && (
                   <>
                     {(
