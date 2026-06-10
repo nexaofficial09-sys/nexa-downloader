@@ -971,6 +971,7 @@ async def download(request: Request, url: str = Query(default=None)):
         "source_address": "0.0.0.0",  # Force IPv4 to prevent severe IPv6 timeout hangs
         "concurrent_fragment_downloads": 10,
         "http_chunk_size": 10485760,
+        "extractor_args": {"youtube": {"player_client": ["web", "ios", "tv"]}},
     }
 
     # Add proxy for TikTok to bypass IP blocks
@@ -1211,7 +1212,7 @@ async def start_merge_task(url: str = Query(...), format_id: str = Query(...), d
                     "source_address": "0.0.0.0",
                     "concurrent_fragment_downloads": 10,
                     "http_chunk_size": 10485760,
-                    "js_runtimes": {"deno": {"path": "d:/Web/NEXA Downloader/backend/deno.exe"}},
+                    "extractor_args": {"youtube": {"player_client": ["web", "ios", "tv"]}},
                     "progress_hooks": [_progress_hook],
                 }
                 if ext == "mp3":
