@@ -874,7 +874,60 @@ async def _fallback_instagram_image(url: str) -> Optional[JSONResponse]:
 
 async def _fallback_facebook(url: str) -> JSONResponse:
     try:
-        # Async HTTP GET to extract OpenGraph tags without blocking the event loop
+        # Resolve redirect first
+        fb_headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+        }
+        async with httpx.AsyncClient(follow_redirects=True, verify=False) as client:
+            resp = await client.get(url, headers=fb_headers, timeout=30.0)
+            final_url = str(resp.url)
+            html_content = resp.text
+
+        # First attempt: Use gallery-dl for high quality photos and carousels
+        import subprocess, json
+        def run_gdl():
+            cmd = ['gallery-dl', '-j', final_url]
+            if os.path.exists('cookies.txt'):
+                cmd.extend(['--cookies', 'cookies.txt'])
+            return subprocess.run(cmd, capture_output=True, text=True)
+            
+        p = await asyncio.to_thread(run_gdl)
+        if p.returncode == 0 and p.stdout.strip():
+            try:
+                data = json.loads(p.stdout)
+                valid_images = []
+                title = "Facebook Post"
+                for item in data:
+                    if isinstance(item, list) and len(item) >= 3 and item[0] == 3:
+                        valid_images.append({
+                            "id": f"image_{len(valid_images)+1}",
+                            "url": item[1],
+                            "ext": "jpg"
+                        })
+                        if isinstance(item[2], dict) and item[2].get("caption"):
+                            title = item[2].get("caption").replace('\n', ' ').strip()[:50]
+                
+                if valid_images:
+                    record_download('facebook')
+                    return JSONResponse(content={
+                        "success": True,
+                        "title": title,
+                        "thumbnail": valid_images[0]["url"],
+                        "duration": None,
+                        "platform": "facebook",
+                        "original_url": url,
+                        "needs_proxy": True,
+                        "is_image_only": True,
+                        "formats": {"video_audio": [], "video_only": [], "audio_only": []},
+                        "images": valid_images,
+                        "subtitles": []
+                    })
+            except Exception as e:
+                logger.error(f"Gallery-dl parsing failed: {e}")
+
+        # Second attempt: Async HTTP GET to extract OpenGraph tags (Fallback)
         fb_headers = {
             "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
@@ -971,7 +1024,7 @@ async def download(request: Request, url: str = Query(default=None)):
         "source_address": "0.0.0.0",  # Force IPv4 to prevent severe IPv6 timeout hangs
         "concurrent_fragment_downloads": 10,
         "http_chunk_size": 10485760,
-        "extractor_args": {"youtube": {"player_client": ["tv_embedded"]}},
+        "extractor_args": {"youtube": {"player_client": ["ios", "web"]}},
     }
     
     if os.path.exists(os.path.join(os.path.dirname(__file__), "cookies.txt")):
@@ -1043,10 +1096,15 @@ async def download(request: Request, url: str = Query(default=None)):
             if tk_resp:
                 return tk_resp
             
+        elif any(domain in url.lower() for domain in ["facebook.com", "fb.watch", "fb.com"]):
+            fb_resp = await _fallback_facebook(url)
+            if fb_resp:
+                return fb_resp
+            raise HTTPException(
+                status_code=422, 
+                detail="Konten Facebook ini memerlukan login atau format tidak didukung."
+            )
         elif "registered users" in msg.lower() or "login" in msg.lower() or "empty media response" in msg.lower():
-            if any(domain in url.lower() for domain in ["facebook.com", "fb.watch", "fb.com"]):
-                return await _fallback_facebook(url)
-            
             raise HTTPException(
                 status_code=422, 
                 detail="Konten ini memerlukan login / bersifat privat."
@@ -1216,7 +1274,7 @@ async def start_merge_task(url: str = Query(...), format_id: str = Query(...), d
                     "source_address": "0.0.0.0",
                     "concurrent_fragment_downloads": 10,
                     "http_chunk_size": 10485760,
-                    "extractor_args": {"youtube": {"player_client": ["tv_embedded"]}},
+                    "extractor_args": {"youtube": {"player_client": ["ios", "web"]}},
                     "progress_hooks": [_progress_hook],
                 }
                 
