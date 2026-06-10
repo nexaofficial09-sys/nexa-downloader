@@ -1951,7 +1951,7 @@ export default function Home() {
             )}
             {mergeAlert.status !== "done" && mergeAlert.status !== "error" && (
               <div className="text-xs font-bold text-blue-400 mb-6">
-                {Math.round(mergeAlert.percent)}% Selesai
+                {Math.round(mergeAlert.percent)}% {t.modalFinished}
               </div>
             )}
             {mergeAlert.status === "done" && <div className="mb-6"></div>}
