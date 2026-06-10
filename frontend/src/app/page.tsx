@@ -794,8 +794,8 @@ export default function Home() {
     }
     return (
       // Mobile: 2 cols, Tablet: 3 cols, Desktop: 4 cols
-      <div className="columns-2 md:columns-3 xl:columns-4 gap-2.5 lg:gap-4 space-y-2.5 lg:space-y-4 fade-in-up">
-        {result.images.map((img, idx) => {
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 lg:gap-4 fade-in-up">
+        {result.images.filter((img) => img.url && img.url.trim() !== "").map((img, idx) => {
           const isYtShort =
             result.platform?.toLowerCase() === "youtube" &&
             result.original_url?.includes("/shorts/");
@@ -819,13 +819,13 @@ export default function Home() {
           );
           return (
             <div
-              key={img.id}
+              key={img.id || idx}
               className="group relative rounded-xl lg:rounded-2xl overflow-hidden bg-white/[0.03] border border-white/[0.06] hover:border-blue-500/20 transition-all duration-300 break-inside-avoid"
             >
               <img
                 src={imgUrl}
                 alt={`Slide ${idx + 1}`}
-                className={`w-full block transition-transform duration-700 group-hover:scale-[1.02] ${isYtShort ? "aspect-[9/16] object-cover" : "h-auto object-contain"}`}
+                className={`w-full block transition-transform duration-700 group-hover:scale-[1.02] ${isYtShort ? "aspect-[9/16] object-cover" : "aspect-square object-cover"}`}
                 loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -1152,7 +1152,7 @@ export default function Home() {
             <div className="glass-dark rounded-2xl lg:rounded-3xl p-4 md:p-6 lg:p-8 fade-in-up">
               <div className="flex flex-col md:flex-row gap-4 lg:gap-6 items-start mb-5 lg:mb-8 pb-5 lg:pb-8 border-b border-white/[0.06]">
                 <div
-                  className={`relative shrink-0 rounded-xl lg:rounded-2xl overflow-hidden bg-white/[0.03] border border-white/[0.06] group flex items-center justify-center ${result.platform?.toLowerCase() === "tiktok" || result.original_url?.includes("/shorts/") || result.platform?.toLowerCase() === "instagram" || result.is_image_only ? "w-40 sm:w-48 md:w-48 lg:w-56 h-auto mx-auto md:mx-0" : "w-full md:w-48 lg:w-60 xl:w-64 aspect-video"}`}
+                  className={`relative shrink-0 rounded-xl lg:rounded-2xl overflow-hidden bg-white/[0.03] border border-white/[0.06] group flex items-center justify-center ${result.platform?.toLowerCase() === "youtube" ? "w-full md:w-48 lg:w-60 xl:w-64 aspect-video" : "w-fit max-w-full mx-auto md:mx-0"}`}
                 >
                   {result.thumbnail ? (
                     <img
@@ -1165,7 +1165,7 @@ export default function Home() {
                         true,
                       )}
                       alt="Thumbnail"
-                      className={`w-full h-auto bg-black/20 transition-transform duration-700 group-hover:scale-[1.02] ${["youtube", "tiktok"].includes(result.platform?.toLowerCase() || "") && !result.is_image_only ? "object-cover" : "object-contain"}`}
+                      className={`bg-black/20 transition-transform duration-700 group-hover:scale-[1.02] ${result.platform?.toLowerCase() === "youtube" ? "w-full h-auto object-cover" : "w-auto h-auto max-w-[16rem] max-h-64 object-contain"}`}
                       loading="lazy"
                     />
                   ) : (

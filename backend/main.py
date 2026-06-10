@@ -886,15 +886,19 @@ async def _fallback_facebook(url: str) -> JSONResponse:
             html_content = resp.text
 
         # First attempt: Use gallery-dl for high quality photos and carousels
-        import subprocess, json
+        import subprocess, json, sys
         def run_gdl():
-            cmd = ['gallery-dl', '-j', final_url]
+            cmd = [sys.executable, '-m', 'gallery_dl', '-j', final_url]
             if os.path.exists('cookies.txt'):
                 cmd.extend(['--cookies', 'cookies.txt'])
-            return subprocess.run(cmd, capture_output=True, text=True)
+            try:
+                return subprocess.run(cmd, capture_output=True, text=True)
+            except Exception as e:
+                logger.warning(f"gallery-dl execution failed: {e}")
+                return None
             
         p = await asyncio.to_thread(run_gdl)
-        if p.returncode == 0 and p.stdout.strip():
+        if p and p.returncode == 0 and p.stdout.strip():
             try:
                 data = json.loads(p.stdout)
                 valid_images = []
@@ -928,14 +932,15 @@ async def _fallback_facebook(url: str) -> JSONResponse:
                 logger.error(f"Gallery-dl parsing failed: {e}")
 
         # Second attempt: Async HTTP GET to extract OpenGraph tags (Fallback)
-        fb_headers = {
-            "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
-        }
-        async with httpx.AsyncClient(follow_redirects=True, verify=False) as client:
-            resp = await client.get(url, headers=fb_headers, timeout=60.0)
-            html_content = resp.text
+        def _fetch_og():
+            import urllib.request
+            req = urllib.request.Request(url, headers={
+                "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                "Accept-Language": "en-US,en;q=0.5"
+            })
+            return urllib.request.urlopen(req, timeout=30.0).read().decode(errors='ignore')
+            
+        html_content = await asyncio.to_thread(_fetch_og)
         
         # Extract title
         title_match = re.search(r'<meta[^>]*property="og:title"[^>]*content="([^"]+)"', html_content)
@@ -1005,6 +1010,20 @@ async def download(request: Request, url: str = Query(default=None)):
     # yt-dlp doesn't support TikTok /photo/ URLs natively yet, but treating them as /video/ works perfectly
     if "tiktok.com" in url.lower() and "/photo/" in url.lower():
         url = url.replace("/photo/", "/video/")
+        
+    # Resolve Facebook share links before feeding to yt-dlp
+    if "facebook.com/share/" in url.lower() or "fb.watch" in url.lower():
+        import httpx
+        try:
+            with httpx.Client(follow_redirects=True, verify=False, timeout=10.0) as client:
+                fb_headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                }
+                resp = client.get(url, headers=fb_headers)
+                url = str(resp.url)
+        except Exception as e:
+            logger.warning(f"Failed to resolve FB redirect: {e}")
 
     # Use proxy for TikTok to bypass IP blocks
     is_tiktok = "tiktok.com" in url.lower()
@@ -1024,19 +1043,12 @@ async def download(request: Request, url: str = Query(default=None)):
         "source_address": "0.0.0.0",  # Force IPv4 to prevent severe IPv6 timeout hangs
         "concurrent_fragment_downloads": 10,
         "http_chunk_size": 10485760,
-        "extractor_args": {"youtube": {"player_client": ["ios", "web"]}},
+
     }
     
     if os.path.exists(os.path.join(os.path.dirname(__file__), "cookies.txt")):
         ydl_opts["cookiefile"] = os.path.join(os.path.dirname(__file__), "cookies.txt")
         logger.info("Using cookies.txt for authentication")
-
-    # Add proxy for TikTok to bypass IP blocks
-    if is_tiktok:
-        tiktok_proxy = get_random_proxy()
-        if tiktok_proxy:
-            ydl_opts["proxy"] = tiktok_proxy
-            logger.info(f"Using proxy {tiktok_proxy} for TikTok")
 
     try:
         def _extract():
@@ -1075,7 +1087,7 @@ async def download(request: Request, url: str = Query(default=None)):
         if "DRM protected" in msg or "This video is DRM protected" in msg or "This video is not available" in msg or "UNPLAYABLE" in msg:
             raise HTTPException(status_code=400, detail="Video ini dilindungi oleh sistem anti-bot YouTube (BotGuard/SABR) atau hak cipta (DRM), sehingga tidak dapat didownload saat ini.")
 
-        ig_error_indicators = ["no video", "empty media", "not granting access", "429", "too many requests", "unable to download webpage"]
+        ig_error_indicators = ["no video", "empty media", "not granting access", "429", "too many requests", "unable to download webpage", "login", "requires authentication"]
         if "instagram.com" in url.lower() and any(ind in msg.lower() for ind in ig_error_indicators):
             # Coba jalur fallback (RapidAPI lalu embed) jika semua proxy Gagal
             rap_resp = await _fallback_rapidapi_instagram(url)
@@ -1249,7 +1261,7 @@ async def start_merge_task(url: str = Query(...), format_id: str = Query(...), d
 
     def _download():
         try:
-            if direct_url and "vxtwitter_" in format_id:
+            if direct_url and any(x in format_id for x in ["vxtwitter_", "insta_vid", "rapidapi_", "facebook_"]):
                 import httpx
                 target_file = os.path.join(TEMP_DIR, f"{task_id}.{ext}")
                 with httpx.stream("GET", direct_url, follow_redirects=True, verify=False) as r:
@@ -1274,7 +1286,7 @@ async def start_merge_task(url: str = Query(...), format_id: str = Query(...), d
                     "source_address": "0.0.0.0",
                     "concurrent_fragment_downloads": 10,
                     "http_chunk_size": 10485760,
-                    "extractor_args": {"youtube": {"player_client": ["ios", "web"]}},
+
                     "progress_hooks": [_progress_hook],
                 }
                 
