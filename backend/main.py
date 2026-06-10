@@ -971,8 +971,12 @@ async def download(request: Request, url: str = Query(default=None)):
         "source_address": "0.0.0.0",  # Force IPv4 to prevent severe IPv6 timeout hangs
         "concurrent_fragment_downloads": 10,
         "http_chunk_size": 10485760,
-        "extractor_args": {"youtube": {"player_client": ["web", "ios", "tv"]}},
+        "extractor_args": {"youtube": {"player_client": ["tv_embedded"]}},
     }
+    
+    if os.path.exists(os.path.join(os.path.dirname(__file__), "cookies.txt")):
+        ydl_opts["cookiefile"] = os.path.join(os.path.dirname(__file__), "cookies.txt")
+        logger.info("Using cookies.txt for authentication")
 
     # Add proxy for TikTok to bypass IP blocks
     if is_tiktok:
@@ -989,12 +993,12 @@ async def download(request: Request, url: str = Query(default=None)):
             
             for attempt in range(max_retries):
                 opts = dict(ydl_opts)
-                if is_ig:
-                    opts["socket_timeout"] = 5 # Kurangi timeout agar tidak membuat Frontend Hang (Failed to fetch)
-                    proxy = get_random_proxy()
-                    if proxy:
-                        opts["proxy"] = proxy
-                        logger.info(f"Using proxy {proxy} for Instagram (Attempt {attempt+1}/{max_retries})")
+                # if is_ig:
+                #    opts["socket_timeout"] = 5
+                #    proxy = get_random_proxy()
+                #    if proxy:
+                #        opts["proxy"] = proxy
+                #        logger.info(f"Using proxy {proxy} for Instagram")
                 
                 try:
                     with yt_dlp.YoutubeDL(opts) as ydl:
@@ -1212,9 +1216,12 @@ async def start_merge_task(url: str = Query(...), format_id: str = Query(...), d
                     "source_address": "0.0.0.0",
                     "concurrent_fragment_downloads": 10,
                     "http_chunk_size": 10485760,
-                    "extractor_args": {"youtube": {"player_client": ["web", "ios", "tv"]}},
+                    "extractor_args": {"youtube": {"player_client": ["tv_embedded"]}},
                     "progress_hooks": [_progress_hook],
                 }
+                
+                if os.path.exists(os.path.join(os.path.dirname(__file__), "cookies.txt")):
+                    ydl_opts["cookiefile"] = os.path.join(os.path.dirname(__file__), "cookies.txt")
                 if ext == "mp3":
                     ydl_opts["postprocessors"] = [{
                         "key": "FFmpegExtractAudio",
