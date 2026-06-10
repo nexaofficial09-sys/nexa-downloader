@@ -130,7 +130,16 @@ const translations = {
     modalFinished: "Selesai",
     toastCopyOk: "Tautan tersalin ke clipboard!",
     toastCopyFail: "Gagal menyalin tautan!",
-    errorExtractMsg: "Terjadi kesalahan saat memproses tautan."
+    errorExtractMsg: "Terjadi kesalahan saat memproses tautan.",
+    platSectionTitle: "Pengunduh Multi-Platform",
+    footerPrivacy: "Kebijakan Privasi",
+    footerTerms: "Syarat & Ketentuan",
+    adBannerSponsor: "Ruang Iklan Sponsor",
+    adBannerTitle: "Pasang Iklan Anda di Sini",
+    adBannerDesc: "Jangkau ribuan pengguna NEXA Downloader setiap harinya. Hubungi admin untuk detail pemasangan.",
+    contactEmailPlaceholder: "nama@email.com",
+    contactMsgPlaceholder: "Ceritakan kendala yang Anda alami...",
+    footerRights: "© 2026 NEXA Downloader. All rights reserved.",
   },
   en: {
     heroTitle: "Universal ",
@@ -208,7 +217,16 @@ const translations = {
     modalFinished: "Finished",
     toastCopyOk: "Link copied to clipboard!",
     toastCopyFail: "Failed to copy link!",
-    errorExtractMsg: "An error occurred while processing the link."
+    errorExtractMsg: "An error occurred while processing the link.",
+    platSectionTitle: "Multi-Platform Downloader",
+    footerPrivacy: "Privacy Policy",
+    footerTerms: "Terms & Conditions",
+    adBannerSponsor: "SPONSORED AD SPACE",
+    adBannerTitle: "Advertise Here",
+    adBannerDesc: "Reach thousands of NEXA Downloader users daily. Contact admin for advertising details.",
+    contactEmailPlaceholder: "name@email.com",
+    contactMsgPlaceholder: "Describe the issue you're experiencing...",
+    footerRights: "© 2026 NEXA Downloader. All rights reserved.",
   }
 };
 
@@ -360,12 +378,12 @@ interface HistoryItem {
   original_url: string;
 }
 
-const AdBanner = ({ className = "" }: { className?: string }) => (
+const AdBanner = ({ className = "", t }: { className?: string, t: any }) => (
   <div className={`w-full max-w-4xl mx-auto my-6 bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center overflow-hidden relative group ${className}`}>
     <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 border border-slate-700/50 px-2 py-0.5 rounded-full">Ruang Iklan Sponsor</span>
-    <h3 className="text-lg font-black text-slate-300 drop-shadow-md">Pasang Iklan Anda di Sini</h3>
-    <p className="text-xs text-slate-400 mt-1 max-w-md">Jangkau ribuan pengguna NEXA Downloader setiap harinya. Hubungi admin untuk detail pemasangan.</p>
+    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 border border-slate-700/50 px-2 py-0.5 rounded-full">{t.adBannerSponsor}</span>
+    <h3 className="text-lg font-black text-slate-300 drop-shadow-md">{t.adBannerTitle}</h3>
+    <p className="text-xs text-slate-400 mt-1 max-w-md">{t.adBannerDesc}</p>
   </div>
 );
 
@@ -1084,7 +1102,7 @@ export default function Home() {
           )}
           
           {/* ---- AD BANNER (TOP) ---- */}
-          {!loading && !result && <AdBanner className="mb-8 fade-in-up" />}
+          {!loading && !result && <AdBanner t={t} className="mb-8 fade-in-up" />}
 
           {/* ---- ERROR ---- */}
           {error && (
@@ -1350,9 +1368,7 @@ export default function Home() {
 
           {/* ---- PLATFORM SUPPORT ---- */}
           <div className="mt-20 lg:mt-32 fade-in-up">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8 text-center text-glow">
-              Pengunduh Multi-Platform
-            </h2>
+            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8 text-center text-glow">{t.platSectionTitle}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
               {/* Card 1 */}
               <div className="glass-dark p-6 rounded-2xl hover:border-red-500/30 transition-colors duration-300 group">
@@ -1608,7 +1624,7 @@ export default function Home() {
             </div>
           </div>
 
-          <AdBanner className="mb-4 lg:mb-8" />
+          <AdBanner t={t} className="mb-4 lg:mb-8" />
           <div className="flex-1" />
         </div>
       </div>
@@ -1625,24 +1641,18 @@ export default function Home() {
                 Solo Dev Project
               </span>
             </p>
-            <p className="text-slate-500 text-[10px] lg:text-xs">
-              © 2026 NEXA Downloader. All rights reserved.
-            </p>
+            <p className="text-slate-500 text-[10px] lg:text-xs">{t.footerRights}</p>
           </div>
           <div className="flex items-center gap-4">
             <a
               href="/privacy-policy"
               className="text-slate-500 hover:text-blue-400 text-[10px] lg:text-xs font-semibold transition-colors"
-            >
-              Kebijakan Privasi
-            </a>
+            >{t.footerPrivacy}</a>
             <span className="text-slate-700">|</span>
             <a
               href="/terms"
               className="text-slate-500 hover:text-blue-400 text-[10px] lg:text-xs font-semibold transition-colors"
-            >
-              Syarat & Ketentuan
-            </a>
+            >{t.footerTerms}</a>
             <img
               src="/logo.png"
               alt="NEXA"
@@ -1781,26 +1791,22 @@ export default function Home() {
                 className="space-y-4"
               >
                 <div>
-                  <label className="block text-slate-400 text-xs font-bold mb-1.5 ml-1">
-                    Email Anda
-                  </label>
+                  <label className="block text-slate-400 text-xs font-bold mb-1.5 ml-1">{t.contactEmailLabel}</label>
                   <input
                     name="email"
                     type="email"
                     required
-                    placeholder="nama@email.com"
+                    placeholder={t.contactEmailPlaceholder}
                     className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 text-xs font-bold mb-1.5 ml-1">
-                    Kendala / Pesan
-                  </label>
+                  <label className="block text-slate-400 text-xs font-bold mb-1.5 ml-1">{t.contactMsgLabel}</label>
                   <textarea
                     name="message"
                     required
                     rows={3}
-                    placeholder="Ceritakan kendala yang Anda alami..."
+                    placeholder={t.contactMsgPlaceholder}
                     className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all resize-none"
                   ></textarea>
                 </div>
