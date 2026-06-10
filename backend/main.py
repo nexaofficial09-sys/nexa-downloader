@@ -1103,7 +1103,7 @@ async def download(request: Request, url: str = Query(default=None)):
                 detail="Gagal mengunduh dari Instagram. (Mungkin link salah atau server API sedang penuh)"
             )
             
-        if "tiktok.com" in url.lower() and ("no video" in msg.lower() or "empty media" in msg.lower()):
+        if "tiktok.com" in url.lower() and ("no video" in msg.lower() or "empty media" in msg.lower() or "unsupported url" in msg.lower()):
             tk_resp = await _fallback_tiktok(url)
             if tk_resp:
                 return tk_resp
@@ -1145,47 +1145,24 @@ async def download(request: Request, url: str = Query(default=None)):
         subtitles = _extract_subtitles(info)
         
         # --- CUSTOM TIKTOK SLIDE FALLBACK ---
-        if "tiktok" in platform and url:
+        if "tiktok" in platform and url and len(images) <= 1:
             try:
-                import re, json
-                async with httpx.AsyncClient(follow_redirects=True) as client:
-                    resp = await client.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"})
-                    
-                    tk_images = []
-                    
-                    # Method 1: UNIVERSAL_DATA
-                    match = re.search(r'id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>(.*?)</script>', resp.text)
-                    if match:
-                        data = json.loads(match.group(1))
-                        scope = data.get("__DEFAULT_SCOPE__", {})
-                        video_detail = scope.get("webapp.video-detail", {})
-                        item_info = video_detail.get("itemInfo", {}).get("itemStruct", {})
-                        if "imagePost" in item_info:
-                            tk_images = item_info["imagePost"].get("images", [])
-                            
-                    # Method 2: SIGI_STATE
-                    if not tk_images:
-                        match2 = re.search(r'id="SIGI_STATE"[^>]*>(.*?)</script>', resp.text)
-                        if match2:
-                            data = json.loads(match2.group(1))
-                            if "ItemModule" in data:
-                                for item_id, item_data in data["ItemModule"].items():
-                                    if "imagePost" in item_data:
-                                        tk_images = item_data["imagePost"].get("images", [])
-                                        break
-
-                    if tk_images:
-                        images = []
-                        for idx, img in enumerate(tk_images):
-                            img_url = img.get("imageURL", {}).get("urlList", [""])[0]
-                            if img_url:
+                import httpx
+                async with httpx.AsyncClient() as client:
+                    resp = await client.post("https://www.tikwm.com/api/", data={"url": url}, timeout=10.0)
+                    js = resp.json()
+                    if js.get("code") == 0:
+                        tk_images = js.get("data", {}).get("images", [])
+                        if tk_images:
+                            images = []
+                            for idx, img_url in enumerate(tk_images):
                                 images.append({
                                     "id": f"slide_{idx+1}",
                                     "url": img_url,
                                     "ext": "jpg"
                                 })
             except Exception as e:
-                logger.error("TikTok fallback error: %s", e)
+                logger.error("TikTok slide fallback error via tikwm: %s", e)
 
         is_image_only = len(grouped["video_audio"]) == 0 and len(grouped["video_only"]) == 0
         
