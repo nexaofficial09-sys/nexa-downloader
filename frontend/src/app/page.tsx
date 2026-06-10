@@ -77,10 +77,60 @@ const translations = {
     feat1Desc: "Tanpa biaya langganan, tanpa batasan jumlah unduhan. Bebas digunakan kapan saja.",
     feat2Title: "Kecepatan Unduh Maksimal",
     feat2Desc: "Server kami dioptimalkan untuk mengekstrak dan mengunduh media dengan kecepatan tinggi.",
-    feat3Title: "Format Kualitas Tinggi",
-    feat3Desc: "Dukung resolusi 4K, 1080p untuk video, dan kualitas orisinal untuk foto / audio murni.",
-    feat4Title: "Aman & Bebas Iklan Spam",
-    feat4Desc: "Kami tidak menyimpan riwayat unduhan Anda di server, dan privasi Anda sepenuhnya terjaga."
+    feat3Title: "Mendukung Resolusi 4K",
+    feat3Desc: "Unduh video dengan kualitas terbaik hingga 4K atau audio jernih (320kbps).",
+    feat4Title: "Aman & Tanpa Iklan Mengganggu",
+    feat4Desc: "Platform bersih tanpa popup berbahaya atau iklan yang menutupi konten utama.",
+    platYtTitle: "Pengunduh YouTube",
+    platYtDesc: "NEXA mendukung unduhan video MP4, audio MP3, dan YouTube Shorts dengan resolusi tinggi tanpa batasan.",
+    platTtTitle: "TikTok Tanpa Watermark",
+    platTtDesc: "Unduh video TikTok favorit Anda tanpa logo/watermark dengan proses ekstraksi super cepat.",
+    platIgTitle: "Unduhan Instagram",
+    platIgDesc: "Simpan gambar Carousel (multi-slide), Reels, IGTV, dan Postingan Foto dengan sekali klik.",
+    platTwTitle: "Twitter / X",
+    platTwDesc: "Simpan video viral, klip pendek, maupun gambar dari lini masa Twitter (X) langsung ke perangkat Anda.",
+    platFbTitle: "Video Facebook",
+    platFbDesc: "Unduh berbagai format video dari grup publik, halaman komunitas, maupun profil personal di Facebook.",
+    howToTitle: "Cara Menggunakan NEXA",
+    howTo1Title: "Salin Tautan",
+    howTo1Desc: "Salin tautan video, musik, atau postingan foto yang ingin Anda unduh.",
+    howTo2Title: "Tempel Tautan",
+    howTo2Desc: "Tempelkan tautan tersebut pada kolom pencarian di atas, sistem akan memprosesnya otomatis.",
+    howTo3Title: "Pilih & Unduh",
+    howTo3Desc: "Pilih format atau resolusi yang tersedia, lalu klik tombol Simpan atau Unduh.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    faq1Q: "{t.faq1Q}",
+    faq1A: "Ya, layanan kami sepenuhnya gratis tanpa perlu registrasi.",
+    faq2Q: "{t.faq2Q}",
+    faq2A: "File akan otomatis tersimpan di folder 'Downloads' pada perangkat Anda.",
+    faq3Q: "{t.faq3Q}",
+    faq3A: "Sangat aman. Kami tidak menyimpan riwayat unduhan Anda di server kami.",
+    featSectionTitle: "Keuntungan Menggunakan Kami",
+    modalHide: "Sembunyikan",
+    modalDone: "Selesai!",
+    modalWarning: "Harap JANGAN MENUTUP halaman ini. Unduhan otomatis dimulai saat mencapai 100%.",
+    modalErr: "Terjadi Kesalahan",
+    modalPrep: "Menyiapkan File...",
+    contactHelpCenter: "Pusat Bantuan & Laporan",
+    contactTitle: "Hubungi Kami",
+    contactDesc: "Punya kendala saat mengunduh? Hubungi admin NEXA secara langsung melalui opsi di bawah ini.",
+    contactWa: "{t.contactWa}",
+    contactEmail: "{t.contactEmail}",
+    contactEmailLabel: "Email Anda",
+    contactMsgLabel: "Kendala / Pesan",
+    contactSendBtn: "Kirim Pesan",
+    contactSuccess: "Pesan Terkirim!",
+    contactSuccessDesc: "Terima kasih atas laporan Anda. Admin kami akan segera mengeceknya.",
+    contactSendAnother: "Kirim pesan lain",
+    modalAudioTitle: "Mengunduh Audio...",
+    modalVideoTitle: "Mengunduh Video...",
+    modalSubTitle: "Mengunduh Subtitle...",
+    modalConvMp3: "Mengonversi ke MP3...",
+    modalMerge: "Menggabungkan Video & Audio...",
+    modalFinished: "Selesai",
+    toastCopyOk: "Tautan tersalin ke clipboard!",
+    toastCopyFail: "Gagal menyalin tautan!",
+    errorExtractMsg: "Terjadi kesalahan saat memproses tautan."
   },
   en: {
     heroTitle: "Universal ",
@@ -105,10 +155,60 @@ const translations = {
     feat1Desc: "No subscription fees, no download limits. Free to use anytime.",
     feat2Title: "Maximum Download Speed",
     feat2Desc: "Our servers are optimized to extract and download media at high speeds.",
-    feat3Title: "High Quality Formats",
-    feat3Desc: "Supports 4K, 1080p resolutions for videos, and original quality for photos / pure audio.",
-    feat4Title: "Safe & Spam-Free",
-    feat4Desc: "We do not store your download history on our servers, and your privacy is fully protected."
+    feat3Title: "Supports 4K Resolution",
+    feat3Desc: "Download videos in top quality up to 4K or crystal-clear audio (320kbps).",
+    feat4Title: "Safe & Annoying Ad-Free",
+    feat4Desc: "Clean platform without harmful popups or ads that cover the main content.",
+    platYtTitle: "YouTube Downloader",
+    platYtDesc: "NEXA supports MP4 video, MP3 audio, and YouTube Shorts downloads in high resolution without limits.",
+    platTtTitle: "TikTok Without Watermark",
+    platTtDesc: "Download your favorite TikTok videos without logo/watermark with super fast extraction process.",
+    platIgTitle: "Instagram Downloader",
+    platIgDesc: "Save Carousel images (multi-slide), Reels, IGTV, and Photo Posts with a single click.",
+    platTwTitle: "Twitter / X",
+    platTwDesc: "Save viral videos, short clips, or images from your Twitter (X) timeline directly to your device.",
+    platFbTitle: "Facebook Video",
+    platFbDesc: "Download various video formats from public groups, community pages, or personal profiles on Facebook.",
+    howToTitle: "How to Use NEXA",
+    howTo1Title: "Copy Link",
+    howTo1Desc: "Copy the link of the video, music, or photo post you want to download.",
+    howTo2Title: "Paste Link",
+    howTo2Desc: "Paste the link into the search box above, the system will process it automatically.",
+    howTo3Title: "Select & Download",
+    howTo3Desc: "Select the available format or resolution, then click the Save or Download button.",
+    faqTitle: "Frequently Asked Questions",
+    faq1Q: "Is NEXA Downloader free?",
+    faq1A: "Yes, our service is completely free without needing to register.",
+    faq2Q: "Where are my files saved?",
+    faq2A: "Files will be automatically saved in the 'Downloads' folder on your device.",
+    faq3Q: "Is it safe to use?",
+    faq3A: "Very safe. We do not store your download history on our servers.",
+    featSectionTitle: "Why Choose Us",
+    modalHide: "Hide",
+    modalDone: "Done!",
+    modalWarning: "Please DO NOT CLOSE this page. Download starts automatically at 100%.",
+    modalErr: "An Error Occurred",
+    modalPrep: "Preparing File...",
+    contactHelpCenter: "Help Center & Reports",
+    contactTitle: "Contact Us",
+    contactDesc: "Having trouble downloading? Contact NEXA admin directly through the options below.",
+    contactWa: "{t.contactWa}",
+    contactEmail: "Or via Email",
+    contactEmailLabel: "Your Email",
+    contactMsgLabel: "Issue / Message",
+    contactSendBtn: "Send Message",
+    contactSuccess: "Message Sent!",
+    contactSuccessDesc: "Thank you for your report. Our admin will check it shortly.",
+    contactSendAnother: "Send another message",
+    modalAudioTitle: "Downloading Audio...",
+    modalVideoTitle: "Downloading Video...",
+    modalSubTitle: "Downloading Subtitle...",
+    modalConvMp3: "Converting to MP3...",
+    modalMerge: "Merging Video & Audio...",
+    modalFinished: "Finished",
+    toastCopyOk: "Link copied to clipboard!",
+    toastCopyFail: "Failed to copy link!",
+    errorExtractMsg: "An error occurred while processing the link."
   }
 };
 
@@ -438,7 +538,7 @@ export default function Home() {
               a.click();
               document.body.removeChild(a);
               setMergeAlert((p) => ({ ...p, status: "done", percent: 100 }));
-            }, 400); // slight delay at 100% before showing "Selesai!"
+            }, 400); // slight delay at 100% before showing t.modalDone
 
             return { ...prev, percent: 100 };
           }
@@ -1265,13 +1365,8 @@ export default function Home() {
                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  Pengunduh YouTube
-                </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  NEXA mendukung unduhan video MP4, audio MP3, dan YouTube
-                  Shorts dengan resolusi tinggi tanpa batasan.
-                </p>
+                <h3 className="text-lg font-bold text-white mb-2">{t.platYtTitle}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{t.platYtDesc}</p>
               </div>
               {/* Card 2 */}
               <div className="glass-dark p-6 rounded-2xl hover:border-white/30 transition-colors duration-300 group">
@@ -1284,9 +1379,7 @@ export default function Home() {
                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  TikTok Tanpa Watermark
-                </h3>
+                <h3 className="text-lg font-bold text-white mb-2">{t.platTtTitle}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Unduh video TikTok favorit Anda tanpa logo/watermark dengan
                   proses ekstraksi super cepat.
@@ -1318,9 +1411,7 @@ export default function Home() {
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  Unduhan Instagram
-                </h3>
+                <h3 className="text-lg font-bold text-white mb-2">{t.platIgTitle}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Simpan gambar Carousel (multi-slide), Reels, IGTV, dan
                   Postingan Foto dengan sekali klik.
@@ -1337,9 +1428,7 @@ export default function Home() {
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  Twitter / X
-                </h3>
+                <h3 className="text-lg font-bold text-white mb-2">{t.platTwTitle}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Simpan video viral, klip pendek, maupun gambar dari lini masa
                   Twitter (X) langsung ke perangkat Anda.
@@ -1356,9 +1445,7 @@ export default function Home() {
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  Video Facebook
-                </h3>
+                <h3 className="text-lg font-bold text-white mb-2">{t.platFbTitle}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Unduh berbagai format video dari grup publik, halaman
                   komunitas, maupun profil personal di Facebook.
@@ -1369,9 +1456,7 @@ export default function Home() {
 
           {/* ---- HOW TO USE ---- */}
           <div className="mt-20 lg:mt-32 fade-in-up">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-10 text-center text-glow">
-              Cara Menggunakan NEXA
-            </h2>
+            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-10 text-center text-glow">{t.howToTitle}</h2>
             <div className="flex flex-col md:flex-row gap-8 lg:gap-10 justify-center relative px-6 lg:px-12">
               {/* Connecting line (desktop) */}
               <div className="hidden md:block absolute top-8 left-[20%] right-[20%] h-px bg-white/10 z-0" />
@@ -1384,9 +1469,7 @@ export default function Home() {
                     1
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  Salin Tautan
-                </h3>
+                <h3 className="text-lg font-bold text-white mb-2">{t.howTo1Title}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Salin tautan video, musik, atau postingan foto yang ingin Anda
                   unduh.
@@ -1400,9 +1483,7 @@ export default function Home() {
                     2
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  Tempel Tautan
-                </h3>
+                <h3 className="text-lg font-bold text-white mb-2">{t.howTo2Title}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Tempelkan tautan tersebut pada kolom pencarian di atas, sistem
                   akan memprosesnya otomatis.
@@ -1429,9 +1510,7 @@ export default function Home() {
 
           {/* ---- ADVANTAGES ---- */}
           <div className="mt-20 lg:mt-32 glass-dark rounded-[2rem] p-8 md:p-12 fade-in-up border border-blue-500/10">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-10 text-center text-glow">
-              Keuntungan Menggunakan Kami
-            </h2>
+            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-10 text-center text-glow">{t.featSectionTitle}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
               <div className="flex items-start gap-4 lg:gap-5">
                 <div className="mt-0.5 w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0 border border-blue-500/20">
@@ -1495,10 +1574,7 @@ export default function Home() {
                   <h4 className="text-white font-bold mb-1.5 text-lg">
                     Aman &amp; Tanpa Iklan Mengganggu
                   </h4>
-                  <p className="text-slate-400 text-sm leading-relaxed">
-                    Platform bersih tanpa popup berbahaya atau iklan yang
-                    menutupi konten utama.
-                  </p>
+                  <p className="text-slate-400 text-sm leading-relaxed">{t.feat4Desc}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4 lg:gap-5">
@@ -1518,13 +1594,8 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-white font-bold mb-1.5 text-lg">
-                    Mendukung Resolusi 4K
-                  </h4>
-                  <p className="text-slate-400 text-sm leading-relaxed">
-                    Unduh video dengan kualitas terbaik hingga 4K atau audio
-                    jernih (320kbps).
-                  </p>
+                  <h4 className="text-white font-bold mb-1.5 text-lg">{t.feat3Title}</h4>
+                  <p className="text-slate-400 text-sm leading-relaxed">{t.feat3Desc}</p>
                 </div>
               </div>
             </div>
@@ -1532,38 +1603,28 @@ export default function Home() {
 
           {/* ---- FAQ ---- */}
           <div className="mt-20 lg:mt-32 mb-16 lg:mb-20 fade-in-up">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8 text-center text-glow">
-              Pertanyaan yang Sering Diajukan
-            </h2>
+            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8 text-center text-glow">{t.faqTitle}</h2>
             <div className="max-w-3xl mx-auto space-y-4">
               <div className="glass-dark p-5 lg:p-6 rounded-2xl hover:border-blue-500/20 transition-colors">
                 <h4 className="text-white font-bold mb-2 flex items-center gap-3">
                   <span className="text-blue-400 font-black text-xl">Q</span>
-                  Apakah NEXA Downloader gratis?
+                  {t.faq1Q}
                 </h4>
-                <p className="text-slate-400 text-sm ml-7 lg:ml-8 leading-relaxed">
-                  Ya, layanan kami sepenuhnya gratis tanpa perlu registrasi.
-                </p>
+                <p className="text-slate-400 text-sm ml-7 lg:ml-8 leading-relaxed">{t.faq1A}</p>
               </div>
               <div className="glass-dark p-5 lg:p-6 rounded-2xl hover:border-blue-500/20 transition-colors">
                 <h4 className="text-white font-bold mb-2 flex items-center gap-3">
                   <span className="text-blue-400 font-black text-xl">Q</span>
-                  Di mana file saya disimpan?
+                  {t.faq2Q}
                 </h4>
-                <p className="text-slate-400 text-sm ml-7 lg:ml-8 leading-relaxed">
-                  File akan otomatis tersimpan di folder 'Downloads' pada
-                  perangkat Anda.
-                </p>
+                <p className="text-slate-400 text-sm ml-7 lg:ml-8 leading-relaxed">{t.faq2A}</p>
               </div>
               <div className="glass-dark p-5 lg:p-6 rounded-2xl hover:border-blue-500/20 transition-colors">
                 <h4 className="text-white font-bold mb-2 flex items-center gap-3">
                   <span className="text-blue-400 font-black text-xl">Q</span>
-                  Apakah aman digunakan?
+                  {t.faq3Q}
                 </h4>
-                <p className="text-slate-400 text-sm ml-7 lg:ml-8 leading-relaxed">
-                  Sangat aman. Kami tidak menyimpan riwayat unduhan Anda di
-                  server kami.
-                </p>
+                <p className="text-slate-400 text-sm ml-7 lg:ml-8 leading-relaxed">{t.faq3A}</p>
               </div>
             </div>
           </div>
@@ -1633,7 +1694,7 @@ export default function Home() {
           />
         </svg>
         <span className="absolute right-full mr-4 px-3 py-1.5 bg-slate-800 text-slate-200 text-xs font-semibold rounded-lg shadow-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap hidden md:block">
-          Pusat Bantuan &amp; Laporan
+          {t.contactHelpCenter}
         </span>
       </button>
 
@@ -1667,10 +1728,7 @@ export default function Home() {
             <h3 className="text-2xl font-bold text-white mb-2 text-glow">
               Hubungi Kami
             </h3>
-            <p className="text-slate-400 text-sm mb-6">
-              Punya kendala saat mengunduh? Hubungi admin NEXA secara langsung
-              melalui opsi di bawah ini.
-            </p>
+            <p className="text-slate-400 text-sm mb-6">{t.contactDesc}</p>
 
             <a
               href="https://wa.me/6282216631335?text=Halo%20Admin%20NEXA,%20saya%20mengalami%20kendala%20saat%20menggunakan%20Downloader.%20Bisa%20bantu%20saya?"
@@ -1681,13 +1739,13 @@ export default function Home() {
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
               </svg>
-              Chat via WhatsApp
+              {t.contactWa}
             </a>
 
             <div className="flex items-center gap-4 mb-6">
               <div className="h-px bg-white/10 flex-1"></div>
               <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
-                Atau via Email
+                {t.contactEmail}
               </span>
               <div className="h-px bg-white/10 flex-1"></div>
             </div>
@@ -1712,10 +1770,7 @@ export default function Home() {
                 <h4 className="text-green-400 font-bold mb-1">
                   Pesan Terkirim!
                 </h4>
-                <p className="text-slate-400 text-sm">
-                  Terima kasih atas laporan Anda. Admin kami akan segera
-                  mengeceknya.
-                </p>
+                <p className="text-slate-400 text-sm">{t.contactSuccessDesc}</p>
                 <button
                   onClick={() => setContactFormStatus("idle")}
                   className="mt-4 text-slate-500 hover:text-white text-sm font-semibold transition-colors"
@@ -1790,7 +1845,7 @@ export default function Home() {
                       />
                     </svg>
                   ) : (
-                    "Kirim Pesan"
+                    t.contactSendBtn
                   )}
                 </button>
               </form>
@@ -1854,16 +1909,16 @@ export default function Home() {
             )}
 
             <h3 className="text-xl font-bold text-white mb-2">
-              {mergeAlert.status === "processing_subtitle" ? "Mengunduh Subtitle..." :
+              {mergeAlert.status === "processing_subtitle" ? t.modalSubTitle :
                mergeAlert.status === "fake_animating"
-              ? "Menyiapkan File..."
+              ? t.modalPrep
               : mergeAlert.status === "merging"
-              ? (mergeAlert.filename.endsWith(".mp3") ? "Mengonversi ke MP3..." : "Menggabungkan Video & Audio...")
+              ? (mergeAlert.filename.endsWith(".mp3") ? t.modalConvMp3 : t.modalMerge)
               : mergeAlert.status === "done"
-              ? "Selesai!"
+              ? t.modalDone
               : mergeAlert.status === "error"
-                  ? "Terjadi Kesalahan"
-                  : (mergeAlert.filename.endsWith(".mp3") ? "Mengunduh Audio..." : "Mengunduh ke Server...")}
+                  ? t.modalErr
+                  : (mergeAlert.filename.endsWith(".mp3") ? t.modalAudioTitle : "Mengunduh ke Server...")}
             </h3>
 
             <p className="text-sm text-slate-400 leading-relaxed mb-5">
