@@ -965,12 +965,12 @@ export default function Home() {
               NEXA<span className="text-blue-400">.</span>
             </span>
           </div>
-          <div className="hidden lg:flex items-center gap-6 text-sm text-slate-500">
-            <span className="hover:text-white transition-colors cursor-default">{t.navDownloader}</span>
-            <span className="hover:text-white transition-colors cursor-default">{t.navPlatforms}</span>
+          <div className="flex items-center gap-4 lg:gap-6 text-xs lg:text-sm text-slate-500">
+            <span className="hidden md:inline hover:text-white transition-colors cursor-default">{t.navDownloader}</span>
+            <span className="hidden md:inline hover:text-white transition-colors cursor-default">{t.navPlatforms}</span>
             <button 
               onClick={() => setLang(lang === 'id' ? 'en' : 'id')}
-              className="ml-2 px-3 py-1.5 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:text-blue-300 rounded-lg text-xs font-bold uppercase transition-colors border border-blue-500/20 flex items-center gap-2"
+              className="ml-0 md:ml-2 px-2.5 py-1.5 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:text-blue-300 rounded-lg text-[10px] lg:text-xs font-bold uppercase transition-colors border border-blue-500/20 flex items-center gap-2"
             >
               {lang === 'id' ? 'ID 🇮🇩' : 'EN 🇬🇧'}
             </button>
