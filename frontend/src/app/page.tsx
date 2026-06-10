@@ -99,11 +99,11 @@ const translations = {
     howTo3Title: "Pilih & Unduh",
     howTo3Desc: "Pilih format atau resolusi yang tersedia, lalu klik tombol Simpan atau Unduh.",
     faqTitle: "Pertanyaan yang Sering Diajukan",
-    faq1Q: "{t.faq1Q}",
+    faq1Q: "Apakah NEXA Downloader gratis?",
     faq1A: "Ya, layanan kami sepenuhnya gratis tanpa perlu registrasi.",
-    faq2Q: "{t.faq2Q}",
+    faq2Q: "Di mana file saya disimpan?",
     faq2A: "File akan otomatis tersimpan di folder 'Downloads' pada perangkat Anda.",
-    faq3Q: "{t.faq3Q}",
+    faq3Q: "Apakah aman digunakan?",
     faq3A: "Sangat aman. Kami tidak menyimpan riwayat unduhan Anda di server kami.",
     featSectionTitle: "Keuntungan Menggunakan Kami",
     modalHide: "Sembunyikan",
@@ -114,8 +114,8 @@ const translations = {
     contactHelpCenter: "Pusat Bantuan & Laporan",
     contactTitle: "Hubungi Kami",
     contactDesc: "Punya kendala saat mengunduh? Hubungi admin NEXA secara langsung melalui opsi di bawah ini.",
-    contactWa: "{t.contactWa}",
-    contactEmail: "{t.contactEmail}",
+    contactWa: "Chat via WhatsApp",
+    contactEmail: "Atau via Email",
     contactEmailLabel: "Email Anda",
     contactMsgLabel: "Kendala / Pesan",
     contactSendBtn: "Kirim Pesan",
@@ -192,7 +192,7 @@ const translations = {
     contactHelpCenter: "Help Center & Reports",
     contactTitle: "Contact Us",
     contactDesc: "Having trouble downloading? Contact NEXA admin directly through the options below.",
-    contactWa: "{t.contactWa}",
+    contactWa: "Chat via WhatsApp",
     contactEmail: "Or via Email",
     contactEmailLabel: "Your Email",
     contactMsgLabel: "Issue / Message",
@@ -1380,10 +1380,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{t.platTtTitle}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Unduh video TikTok favorit Anda tanpa logo/watermark dengan
-                  proses ekstraksi super cepat.
-                </p>
+                <p className="text-slate-400 text-sm leading-relaxed">{t.platTtDesc}</p>
               </div>
               {/* Card 3 */}
               <div className="glass-dark p-6 rounded-2xl hover:border-pink-500/30 transition-colors duration-300 group">
@@ -1412,10 +1409,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{t.platIgTitle}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Simpan gambar Carousel (multi-slide), Reels, IGTV, dan
-                  Postingan Foto dengan sekali klik.
-                </p>
+                <p className="text-slate-400 text-sm leading-relaxed">{t.platIgDesc}</p>
               </div>
               {/* Card 4 */}
               <div className="glass-dark p-6 rounded-2xl hover:border-white/30 transition-colors duration-300 group">
@@ -1429,10 +1423,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{t.platTwTitle}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Simpan video viral, klip pendek, maupun gambar dari lini masa
-                  Twitter (X) langsung ke perangkat Anda.
-                </p>
+                <p className="text-slate-400 text-sm leading-relaxed">{t.platTwDesc}</p>
               </div>
               {/* Card 5 */}
               <div className="glass-dark p-6 rounded-2xl hover:border-blue-500/30 transition-colors duration-300 group">
@@ -1446,10 +1437,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{t.platFbTitle}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Unduh berbagai format video dari grup publik, halaman
-                  komunitas, maupun profil personal di Facebook.
-                </p>
+                <p className="text-slate-400 text-sm leading-relaxed">{t.platFbDesc}</p>
               </div>
             </div>
           </div>
@@ -1470,10 +1458,7 @@ export default function Home() {
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{t.howTo1Title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Salin tautan video, musik, atau postingan foto yang ingin Anda
-                  unduh.
-                </p>
+                <p className="text-slate-400 text-sm leading-relaxed">{t.howTo1Desc}</p>
               </div>
               {/* Step 2 */}
               <div className="relative z-10 flex flex-col items-center text-center flex-1 group">
@@ -1484,10 +1469,7 @@ export default function Home() {
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{t.howTo2Title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Tempelkan tautan tersebut pada kolom pencarian di atas, sistem
-                  akan memprosesnya otomatis.
-                </p>
+                <p className="text-slate-400 text-sm leading-relaxed">{t.howTo2Desc}</p>
               </div>
               {/* Step 3 */}
               <div className="relative z-10 flex flex-col items-center text-center flex-1 group">
@@ -1500,10 +1482,7 @@ export default function Home() {
                 <h3 className="text-lg font-bold text-white mb-2">
                   Pilih &amp; Unduh
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Pilih format atau resolusi yang tersedia, lalu klik tombol
-                  Simpan atau Unduh.
-                </p>
+                <p className="text-slate-400 text-sm leading-relaxed">{t.howTo3Desc}</p>
               </div>
             </div>
           </div>
