@@ -1152,7 +1152,7 @@ export default function Home() {
             <div className="glass-dark rounded-2xl lg:rounded-3xl p-4 md:p-6 lg:p-8 fade-in-up">
               <div className="flex flex-col md:flex-row gap-4 lg:gap-6 items-start mb-5 lg:mb-8 pb-5 lg:pb-8 border-b border-white/[0.06]">
                 <div
-                  className={`relative shrink-0 rounded-xl lg:rounded-2xl overflow-hidden bg-white/[0.03] border border-white/[0.06] group flex items-center justify-center ${result.platform?.toLowerCase() === "tiktok" || result.original_url?.includes("/shorts/") || result.platform?.toLowerCase() === "instagram" ? "w-40 sm:w-48 md:w-48 lg:w-56 h-auto mx-auto md:mx-0" : "w-full md:w-48 lg:w-60 xl:w-64 aspect-video"}`}
+                  className={`relative shrink-0 rounded-xl lg:rounded-2xl overflow-hidden bg-white/[0.03] border border-white/[0.06] group flex items-center justify-center ${result.platform?.toLowerCase() === "tiktok" || result.original_url?.includes("/shorts/") || result.platform?.toLowerCase() === "instagram" || result.is_image_only ? "w-40 sm:w-48 md:w-48 lg:w-56 h-auto mx-auto md:mx-0" : "w-full md:w-48 lg:w-60 xl:w-64 aspect-video"}`}
                 >
                   {result.thumbnail ? (
                     <img
