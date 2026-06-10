@@ -281,7 +281,7 @@ def _extract_grouped_formats(info: dict) -> dict:
         # Find best audio per language
         best_audio_by_lang = {}
         for a in audio_only_list:
-            l = a["language"]
+            l = a.get("language") or a.get("format_note") or a.get("format_id", "")
             if l not in best_audio_by_lang or a["filesize"] > best_audio_by_lang[l]["filesize"]:
                 best_audio_by_lang[l] = a
                 
@@ -966,9 +966,11 @@ async def download(request: Request, url: str = Query(default=None)):
         "quiet": True,
         "no_warnings": True,
         "skip_download": True,
-        "extract_flat": False,
+        "extract_flat": "in_playlist",
         "socket_timeout": 15,
         "source_address": "0.0.0.0",  # Force IPv4 to prevent severe IPv6 timeout hangs
+        "concurrent_fragment_downloads": 10,
+        "http_chunk_size": 10485760,
     }
 
     # Add proxy for TikTok to bypass IP blocks
@@ -1207,6 +1209,8 @@ async def start_merge_task(url: str = Query(...), format_id: str = Query(...), d
                     "outtmpl": out_tmpl,
                     "socket_timeout": 15,
                     "source_address": "0.0.0.0",
+                    "concurrent_fragment_downloads": 10,
+                    "http_chunk_size": 10485760,
                     "js_runtimes": {"deno": {"path": "d:/Web/NEXA Downloader/backend/deno.exe"}},
                     "progress_hooks": [_progress_hook],
                 }
