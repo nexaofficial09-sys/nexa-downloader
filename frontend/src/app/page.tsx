@@ -131,6 +131,14 @@ const translations = {
     toastCopyOk: "Tautan tersalin ke clipboard!",
     toastCopyFail: "Gagal menyalin tautan!",
     errorExtractMsg: "Terjadi kesalahan saat memproses tautan.",
+    modalServerDl: "Mengunduh ke Server...",
+    modalClose: "Tutup",
+    modalReady: "File Anda sudah siap dan sedang diunduh oleh browser.",
+    modalErrorText: "Gagal memproses video ini di server. Silakan coba kualitas lain.",
+    modalCached: "File sudah di-cache oleh server. Mempersiapkan unduhan Anda...",
+    modalWarning1: "Harap",
+    modalWarning2: "JANGAN MENUTUP",
+    modalWarning3: "halaman ini. Unduhan otomatis dimulai saat mencapai 100%.",
     platSectionTitle: "Pengunduh Multi-Platform",
     footerPrivacy: "Kebijakan Privasi",
     footerTerms: "Syarat & Ketentuan",
@@ -218,6 +226,14 @@ const translations = {
     toastCopyOk: "Link copied to clipboard!",
     toastCopyFail: "Failed to copy link!",
     errorExtractMsg: "An error occurred while processing the link.",
+    modalServerDl: "Downloading to Server...",
+    modalClose: "Close",
+    modalReady: "Your file is ready and is being downloaded by your browser.",
+    modalErrorText: "Failed to process this video on the server. Please try another quality.",
+    modalCached: "File is already cached by the server. Preparing your download...",
+    modalWarning1: "Please",
+    modalWarning2: "DO NOT CLOSE",
+    modalWarning3: "this page. Download starts automatically at 100%.",
     platSectionTitle: "Multi-Platform Downloader",
     footerPrivacy: "Privacy Policy",
     footerTerms: "Terms & Conditions",
@@ -1903,7 +1919,7 @@ export default function Home() {
               ? t.modalDone
               : mergeAlert.status === "error"
                   ? t.modalErr
-                  : (mergeAlert.filename.endsWith(".mp3") ? t.modalAudioTitle : "Mengunduh ke Server...")}
+                  : (mergeAlert.filename.endsWith(".mp3") ? t.modalAudioTitle : t.modalServerDl)}
             </h3>
 
             <p className="text-sm text-slate-400 leading-relaxed mb-5">
@@ -1915,9 +1931,9 @@ export default function Home() {
                 "File sudah di-cache oleh server. Mempersiapkan unduhan Anda..."
               ) : (
                 <>
-                  Harap{" "}
-                  <span className="text-red-400 font-bold">JANGAN MENUTUP</span>{" "}
-                  halaman ini. Unduhan otomatis dimulai saat mencapai 100%.
+                  {t.modalWarning1}{" "}
+                  <span className="text-red-400 font-bold">{t.modalWarning2}</span>{" "}
+                  {t.modalWarning3}
                 </>
               )}
             </p>
@@ -1959,8 +1975,8 @@ export default function Home() {
               }`}
             >
               {mergeAlert.status === "done" || mergeAlert.status === "error"
-                ? "Tutup"
-                : "Sembunyikan"}
+                ? t.modalClose
+                : t.modalHide}
             </button>
           </div>
         </div>
