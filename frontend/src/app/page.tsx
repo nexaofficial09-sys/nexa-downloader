@@ -1715,7 +1715,7 @@ export default function Home() {
             </button>
 
             <h3 className="text-2xl font-bold text-white mb-2 text-glow">
-              Hubungi Kami
+              {t.contactTitle}
             </h3>
             <p className="text-slate-400 text-sm mb-6">{t.contactDesc}</p>
 
