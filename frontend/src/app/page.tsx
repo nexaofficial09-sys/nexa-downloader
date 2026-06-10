@@ -1924,11 +1924,11 @@ export default function Home() {
 
             <p className="text-sm text-slate-400 leading-relaxed mb-5">
               {mergeAlert.status === "done" ? (
-                "File Anda sudah siap dan sedang diunduh oleh browser."
+                t.modalReady
               ) : mergeAlert.status === "error" ? (
-                "Gagal memproses video ini di server. Silakan coba kualitas lain."
+                t.modalErrorText
               ) : mergeAlert.status === "fake_animating" ? (
-                "File sudah di-cache oleh server. Mempersiapkan unduhan Anda..."
+                t.modalCached
               ) : (
                 <>
                   {t.modalWarning1}{" "}
