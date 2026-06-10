@@ -50,6 +50,70 @@ interface ExtractResult {
 const API_BASE = typeof window !== "undefined" && window.location.hostname === "localhost" ? "http://localhost:8000" : "https://api.nexalabs.my.id";
 
 // ---------------------------------------------------------------------------
+// Translations
+// ---------------------------------------------------------------------------
+type Language = 'id' | 'en';
+const translations = {
+  id: {
+    heroTitle: "Pengunduh ",
+    heroSub: "Multi-Platform",
+    heroDesc: "Ekstrak video resolusi tinggi, audio jernih, dan Slide Foto (Carousel) dengan mudah. Sistem telah di-upgrade dengan Bypass Anti-Bot terbaru untuk hasil yang lebih maksimal.",
+    pasteLabel: "Tempel link sosial media di sini...",
+    btnExtract: "Ekstrak",
+    btnExtracting: "Memproses...",
+    featuresTitle: "Kenapa Memilih NEXA Downloader?",
+    navDownloader: "Pengunduh",
+    navPlatforms: "Platform Didukung",
+    tabVideoAudio: "Video + Audio",
+    tabVideoOnly: "Hanya Video",
+    tabAudioOnly: "Hanya Audio",
+    tabImages: "Gambar",
+    tabSubtitles: "Takarir (Subtitles)",
+    btnDownload: "Unduh",
+    btnMerge: "Gabungkan",
+    proxyBypass: "NEXA Server Proxy (Bypass)",
+    footerText: "Dibuat dengan ❤️ oleh NEXA Downloader",
+    feat1Title: "100% Gratis Selamanya",
+    feat1Desc: "Tanpa biaya langganan, tanpa batasan jumlah unduhan. Bebas digunakan kapan saja.",
+    feat2Title: "Kecepatan Unduh Maksimal",
+    feat2Desc: "Server kami dioptimalkan untuk mengekstrak dan mengunduh media dengan kecepatan tinggi.",
+    feat3Title: "Format Kualitas Tinggi",
+    feat3Desc: "Dukung resolusi 4K, 1080p untuk video, dan kualitas orisinal untuk foto / audio murni.",
+    feat4Title: "Aman & Bebas Iklan Spam",
+    feat4Desc: "Kami tidak menyimpan riwayat unduhan Anda di server, dan privasi Anda sepenuhnya terjaga."
+  },
+  en: {
+    heroTitle: "Universal ",
+    heroSub: "Downloader",
+    heroDesc: "Extract high-resolution videos, crystal-clear audio, and Photo Carousels effortlessly. Upgraded with the latest Anti-Bot Bypass for maximum performance.",
+    pasteLabel: "Paste social media link here...",
+    btnExtract: "Extract",
+    btnExtracting: "Processing...",
+    featuresTitle: "Why Choose NEXA Downloader?",
+    navDownloader: "Downloader",
+    navPlatforms: "Supported Platforms",
+    tabVideoAudio: "Video + Audio",
+    tabVideoOnly: "Video Only",
+    tabAudioOnly: "Audio Only",
+    tabImages: "Images",
+    tabSubtitles: "Subtitles",
+    btnDownload: "Download",
+    btnMerge: "Merge",
+    proxyBypass: "NEXA Server Proxy (Bypass)",
+    footerText: "Made with ❤️ by NEXA Downloader",
+    feat1Title: "100% Free Forever",
+    feat1Desc: "No subscription fees, no download limits. Free to use anytime.",
+    feat2Title: "Maximum Download Speed",
+    feat2Desc: "Our servers are optimized to extract and download media at high speeds.",
+    feat3Title: "High Quality Formats",
+    feat3Desc: "Supports 4K, 1080p resolutions for videos, and original quality for photos / pure audio.",
+    feat4Title: "Safe & Spam-Free",
+    feat4Desc: "We do not store your download history on our servers, and your privacy is fully protected."
+  }
+};
+
+
+// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 function formatDuration(seconds?: number | null): string {
@@ -231,6 +295,8 @@ export default function Home() {
     );
   }
 
+  const [lang, setLang] = useState<Language>("id");
+  const t = translations[lang];
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -398,7 +464,7 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Failed to extract.");
       setResult(data);
-      addToHistory(data);
+      // History disabled
       if (
         data.is_image_only ||
         (data.images?.length > 0 && data.formats.video_audio.length === 0)
@@ -558,9 +624,7 @@ export default function Home() {
                     strokeWidth={2.5}
                     d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                   />
-                </svg>
-                Download
-              </button>
+                </svg>{t.btnDownload}</button>
             </div>
           );
         })}
@@ -768,12 +832,14 @@ export default function Home() {
             </span>
           </div>
           <div className="hidden lg:flex items-center gap-6 text-sm text-slate-500">
-            <span className="hover:text-white transition-colors cursor-default">
-              Downloader
-            </span>
-            <span className="hover:text-white transition-colors cursor-default">
-              Supported Platforms
-            </span>
+            <span className="hover:text-white transition-colors cursor-default">{t.navDownloader}</span>
+            <span className="hover:text-white transition-colors cursor-default">{t.navPlatforms}</span>
+            <button 
+              onClick={() => setLang(lang === 'id' ? 'en' : 'id')}
+              className="ml-2 px-3 py-1.5 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:text-blue-300 rounded-lg text-xs font-bold uppercase transition-colors border border-blue-500/20 flex items-center gap-2"
+            >
+              {lang === 'id' ? 'ID 🇮🇩' : 'EN 🇬🇧'}
+            </button>
           </div>
         </div>
       </nav>
@@ -786,16 +852,13 @@ export default function Home() {
           {/* ---- HERO ---- */}
           <div className="text-center mt-6 md:mt-10 lg:mt-16 xl:mt-20 mb-6 lg:mb-10 fade-in-up">
             <h1 className="text-[2.2rem] leading-[1.1] md:text-5xl lg:text-6xl xl:text-7xl font-black mb-3 lg:mb-5 tracking-tight text-white text-glow">
-              Pengunduh{" "}
+              {t.heroTitle}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
-                Multi-Platform
+                {t.heroSub}
               </span>
             </h1>
             <p className="text-slate-400 text-sm md:text-base lg:text-lg max-w-md lg:max-w-xl mx-auto leading-relaxed mb-5">
-              Ekstrak video resolusi tinggi, audio jernih, dan{" "}
-              <strong>Slide Foto (Carousel)</strong> dengan mudah. Sistem telah
-              di-upgrade dengan Bypass Anti-Bot terbaru untuk hasil yang lebih
-              maksimal.
+              {t.heroDesc}
             </p>
 
           </div>
@@ -823,7 +886,7 @@ export default function Home() {
               </div>
               <input
                 type="url"
-                placeholder="Paste social media link here..."
+                placeholder={t.pasteLabel}
                 required
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
@@ -1118,9 +1181,7 @@ export default function Home() {
                         ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-sm btn-glow"
                         : "text-slate-500 hover:text-slate-300"
                     }`}
-                  >
-                    Images
-                    <span
+                  >{t.tabImages}<span
                       className={`ml-1 lg:ml-1.5 px-1 lg:px-1.5 py-0.5 rounded text-[9px] lg:text-[10px] font-bold ${activeTab === "images" ? "bg-white/20 text-white" : "bg-white/[0.05] text-slate-500"}`}
                     >
                       {result.images.length}
@@ -1135,9 +1196,7 @@ export default function Home() {
                         ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-sm btn-glow"
                         : "text-slate-500 hover:text-slate-300"
                     }`}
-                  >
-                    Subtitles
-                    <span
+                  >{t.tabSubtitles}<span
                       className={`ml-1 lg:ml-1.5 px-1 lg:px-1.5 py-0.5 rounded text-[9px] lg:text-[10px] font-bold ${activeTab === "subtitles" ? "bg-white/20 text-white" : "bg-white/[0.05] text-slate-500"}`}
                     >
                       {result.subtitles.length}
@@ -1391,13 +1450,8 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-white font-bold mb-1.5 text-lg">
-                    100% Gratis Selamanya
-                  </h4>
-                  <p className="text-slate-400 text-sm leading-relaxed">
-                    Tanpa biaya langganan, tanpa batasan jumlah unduhan. Bebas
-                    digunakan kapan saja.
-                  </p>
+                  <h4 className="text-white font-bold mb-1.5 text-lg">{t.feat1Title}</h4>
+                  <p className="text-slate-400 text-sm leading-relaxed">{t.feat1Desc}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4 lg:gap-5">
@@ -1417,13 +1471,8 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-white font-bold mb-1.5 text-lg">
-                    Kecepatan Unduh Maksimal
-                  </h4>
-                  <p className="text-slate-400 text-sm leading-relaxed">
-                    Server kami dioptimalkan untuk mengekstrak dan mengunduh
-                    media dengan kecepatan tinggi.
-                  </p>
+                  <h4 className="text-white font-bold mb-1.5 text-lg">{t.feat2Title}</h4>
+                  <p className="text-slate-400 text-sm leading-relaxed">{t.feat2Desc}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4 lg:gap-5">
@@ -1877,89 +1926,8 @@ export default function Home() {
         </div>
       )}
 
-      {/* ============================================================
-          FLOATING ACTION BUTTON (HISTORY)
-          ============================================================ */}
-      <button
-        onClick={() => setShowHistory(true)}
-        className="fixed bottom-24 right-6 lg:bottom-32 lg:right-10 z-40 flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 bg-white/[0.05] border border-white/10 hover:bg-white/10 text-slate-300 hover:text-white rounded-full shadow-lg hover:-translate-y-1 transition-all duration-300 group backdrop-blur-md"
-      >
-        <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span className="absolute right-full mr-4 px-3 py-1.5 bg-slate-800 text-slate-200 text-xs font-semibold rounded-lg shadow-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap hidden md:block">
-          Riwayat Unduhan
-        </span>
-      </button>
+      
 
-      {/* ============================================================
-          HISTORY DRAWER
-          ============================================================ */}
-      {showHistory && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-[#0b1121] border border-white/10 rounded-3xl p-6 lg:p-8 max-w-lg w-full shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col max-h-[85vh]">
-            <button
-              onClick={() => setShowHistory(false)}
-              className="absolute top-5 right-5 text-slate-500 hover:text-white transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-1 text-glow">Riwayat Unduhan</h3>
-                <p className="text-slate-400 text-sm">15 unduhan terakhir yang Anda lakukan.</p>
-              </div>
-              {history.length > 0 && (
-                <button
-                  onClick={clearHistory}
-                  className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold rounded-lg border border-red-500/20 transition-colors flex items-center gap-1.5 shrink-0"
-                >
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                  Hapus Semua
-                </button>
-              )}
-            </div>
-            
-            <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
-              {history.length === 0 ? (
-                <div className="text-center py-10">
-                  <p className="text-slate-500">Belum ada riwayat unduhan.</p>
-                </div>
-              ) : (
-                history.map((h) => (
-                  <div key={h.id} className="flex items-center justify-between gap-4 p-3 bg-white/[0.03] border border-white/5 rounded-xl hover:bg-white/[0.05] transition-colors group relative cursor-pointer" onClick={() => { setUrl(h.original_url); setShowHistory(false); }}>
-                    <div className="flex items-center gap-4 flex-1 overflow-hidden">
-                      <div className="w-20 h-16 shrink-0 bg-black/40 rounded-lg overflow-hidden border border-white/10">
-                        <img src={h.thumbnail || '/logo.png'} alt="Thumb" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                      <div className="flex flex-col justify-center overflow-hidden">
-                        <h4 className="text-white font-bold text-sm truncate mb-1 max-w-[200px] lg:max-w-[250px]">{h.title || 'Video'}</h4>
-                        <div className="flex items-center gap-2 text-xs">
-                          <span className="text-blue-400 uppercase font-black tracking-wider text-[10px] bg-blue-500/10 px-2 py-0.5 rounded">{h.platform}</span>
-                          <span className="text-slate-500">{new Date(h.timestamp).toLocaleDateString('id-ID')}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={(e) => deleteHistoryItem(h.id, e)}
-                      className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors shrink-0"
-                      title="Hapus riwayat ini"
-                    >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </main>
+      </main>
   );
 }
