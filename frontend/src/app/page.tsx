@@ -403,7 +403,7 @@ const AdBanner = ({ className = "", t }: { className?: string, t: any }) => {
       conf.type = 'text/javascript';
       conf.innerHTML = `
         atOptions = {
-          'key' : 'd31d63c10f8f6f0016816fadb798f628',
+          'key' : 'da47afc2cfbfe8096db5364e18c803a5',
           'format' : 'iframe',
           'height' : 90,
           'width' : 728,
@@ -413,7 +413,7 @@ const AdBanner = ({ className = "", t }: { className?: string, t: any }) => {
       
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = "https://www.highperformanceformat.com/d31d63c10f8f6f0016816fadb798f628/invoke.js";
+      script.src = "https://www.highperformanceformat.com/da47afc2cfbfe8096db5364e18c803a5/invoke.js";
       
       adRef.current.appendChild(conf);
       adRef.current.appendChild(script);
