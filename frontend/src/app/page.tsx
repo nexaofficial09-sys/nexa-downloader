@@ -394,8 +394,9 @@ interface HistoryItem {
   original_url: string;
 }
 
-export function AdBanner({ className = "", t: propT }: { className?: string, t?: any }) {
+export function AdBanner({ className = "", adKey, t: propT }: { className?: string, adKey?: string, t?: any }) {
   const t = propT || useTranslations();
+  const key = adKey || "da47afc2cfbfe8096db5364e18c803a5";
 
   return (
     <div className={`w-full max-w-4xl mx-auto my-6 flex flex-col items-center justify-center text-center overflow-hidden relative group ${className}`}>
@@ -403,7 +404,7 @@ export function AdBanner({ className = "", t: propT }: { className?: string, t?:
       <div className="w-full flex justify-center overflow-hidden h-[45px] sm:h-[90px]">
         <div className="origin-top scale-[0.45] sm:scale-100 flex justify-center items-start">
           <iframe 
-            src="https://www.highperformanceformat.com/watchnew?key=da47afc2cfbfe8096db5364e18c803a5&format=iframe&height=90&width=728" 
+            src={`https://www.highperformanceformat.com/watchnew?key=${key}&format=iframe&height=90&width=728`}
             width="728" 
             height="90" 
             frameBorder="0" 
@@ -1121,7 +1122,7 @@ export default function Home() {
           )}
           
           {/* ---- AD BANNER (TOP) ---- */}
-          {!loading && !result && <AdBanner t={t} className="mb-8 fade-in-up" />}
+          {!loading && !result && <AdBanner t={t} className="mb-8 fade-in-up" adKey="d31d63c10f8f6f0016816fadb798f628" />}
 
           {/* ---- ERROR ---- */}
           {error && (
