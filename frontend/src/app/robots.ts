@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/'],
     },
-    sitemap: 'https://dl.nexalabs.my.id/sitemap.xml',
+    sitemap: 'https://nexalabs.my.id/sitemap.xml',
   }
 }

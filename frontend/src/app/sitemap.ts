@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://dl.nexalabs.my.id'
+  const baseUrl = 'https://nexalabs.my.id'
 
   return [
     {
