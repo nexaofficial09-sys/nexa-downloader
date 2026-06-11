@@ -49,6 +49,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full`}>
       <head>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9737044242758389" crossOrigin="anonymous"></script>
+        <script src="https://pl29709267.effectivecpmnetwork.com/16/dc/c4/16dcc4149d8ea5316f20076370262bec.js" async></script>
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
