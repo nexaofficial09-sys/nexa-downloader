@@ -394,8 +394,7 @@ interface HistoryItem {
   original_url: string;
 }
 
-export function AdBanner({ className = "", adKey, t: propT }: { className?: string, adKey?: string, t?: any }) {
-  const t = propT || useTranslations();
+export function AdBanner({ className = "", adKey, t }: { className?: string, adKey?: string, t?: any }) {
   
   // The top banner has adKey="d31...", the bottom banner doesn't have it
   const isTop = !!adKey;
