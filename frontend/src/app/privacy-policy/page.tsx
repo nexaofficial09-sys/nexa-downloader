@@ -57,7 +57,7 @@ const translations = {
 };
 
 export default function PrivacyPolicyPage() {
-  const [lang, setLang] = useState<Language>("en");
+  const [lang, setLang] = useState<Language>("id");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
