@@ -394,14 +394,39 @@ interface HistoryItem {
   original_url: string;
 }
 
-const AdBanner = ({ className = "", t }: { className?: string, t: any }) => (
-  <div className={`w-full max-w-4xl mx-auto my-6 bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center overflow-hidden relative group ${className}`}>
-    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 border border-slate-700/50 px-2 py-0.5 rounded-full">{t.adBannerSponsor}</span>
-    <h3 className="text-lg font-black text-slate-300 drop-shadow-md">{t.adBannerTitle}</h3>
-    <p className="text-xs text-slate-400 mt-1 max-w-md">{t.adBannerDesc}</p>
-  </div>
-);
+const AdBanner = ({ className = "", t }: { className?: string, t: any }) => {
+  const adRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (adRef.current && !adRef.current.querySelector('script[src*="invoke.js"]')) {
+      const conf = document.createElement('script');
+      conf.type = 'text/javascript';
+      conf.innerHTML = `
+        atOptions = {
+          'key' : 'd31d63c10f8f6f0016816fadb798f628',
+          'format' : 'iframe',
+          'height' : 90,
+          'width' : 728,
+          'params' : {}
+        };
+      `;
+      
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = "https://www.highperformanceformat.com/d31d63c10f8f6f0016816fadb798f628/invoke.js";
+      
+      adRef.current.appendChild(conf);
+      adRef.current.appendChild(script);
+    }
+  }, []);
+
+  return (
+    <div className={`w-full max-w-4xl mx-auto my-6 flex flex-col items-center justify-center text-center overflow-hidden relative group ${className}`}>
+      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 px-2 py-0.5">{t.adBannerSponsor || 'Advertisement'}</span>
+      <div ref={adRef} className="min-h-[90px] w-full flex justify-center items-center overflow-hidden"></div>
+    </div>
+  );
+};
 
 export default function Home() {
   const isMaintenance = process.env.NEXT_PUBLIC_MAINTENANCE === "true";
