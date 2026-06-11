@@ -394,37 +394,23 @@ interface HistoryItem {
   original_url: string;
 }
 
-const AdBanner = ({ className = "", t }: { className?: string, t: any }) => {
-  const adRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (adRef.current && !adRef.current.querySelector('script[src*="invoke.js"]')) {
-      const conf = document.createElement('script');
-      conf.type = 'text/javascript';
-      conf.innerHTML = `
-        atOptions = {
-          'key' : 'da47afc2cfbfe8096db5364e18c803a5',
-          'format' : 'iframe',
-          'height' : 90,
-          'width' : 728,
-          'params' : {}
-        };
-      `;
-      
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = "https://www.highperformanceformat.com/da47afc2cfbfe8096db5364e18c803a5/invoke.js";
-      
-      adRef.current.appendChild(conf);
-      adRef.current.appendChild(script);
-    }
-  }, []);
+export function AdBanner({ className = "", t: propT }: { className?: string, t?: any }) {
+  const t = propT || useTranslations();
 
   return (
     <div className={`w-full max-w-4xl mx-auto my-6 flex flex-col items-center justify-center text-center overflow-hidden relative group ${className}`}>
       <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 px-2 py-0.5">{t.adBannerSponsor || 'Advertisement'}</span>
       <div className="w-full flex justify-center overflow-hidden h-[45px] sm:h-[90px]">
-        <div ref={adRef} className="origin-top scale-[0.45] sm:scale-100 flex justify-center items-start"></div>
+        <div className="origin-top scale-[0.45] sm:scale-100 flex justify-center items-start">
+          <iframe 
+            src="https://www.highperformanceformat.com/watchnew?key=da47afc2cfbfe8096db5364e18c803a5&format=iframe&height=90&width=728" 
+            width="728" 
+            height="90" 
+            frameBorder="0" 
+            scrolling="no" 
+            title="Sponsor Ad"
+          />
+        </div>
       </div>
     </div>
   );
