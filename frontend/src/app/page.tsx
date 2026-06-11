@@ -396,29 +396,26 @@ interface HistoryItem {
 
 export function AdBanner({ className = "", adKey, t: propT }: { className?: string, adKey?: string, t?: any }) {
   const t = propT || useTranslations();
-  const key = adKey || "d31d63c10f8f6f0016816fadb798f628";
   
-  // Cache buster
-  const [rnd, setRnd] = useState(0);
-  useEffect(() => {
-    setRnd(Math.random());
-  }, []);
+  // The top banner has adKey="d31...", the bottom banner doesn't have it
+  const isTop = !!adKey;
+  const iframeSrc = isTop 
+    ? `https://www.highperformanceformat.com/watchnew?key=${adKey}&format=iframe&height=90&width=728`
+    : '/ad_bottom.html';
 
   return (
     <div className={`w-full max-w-4xl mx-auto my-6 flex flex-col items-center justify-center text-center overflow-hidden relative group ${className}`}>
       <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 px-2 py-0.5">{t.adBannerSponsor || 'Advertisement'}</span>
       <div className="w-full flex justify-center overflow-hidden h-[45px] sm:h-[90px]">
         <div className="origin-top scale-[0.45] sm:scale-100 flex justify-center items-start">
-          {rnd > 0 && (
-            <iframe
-              src={`https://www.highperformanceformat.com/watchnew?key=${key}&format=iframe&height=90&width=728&rnd=${rnd}`}
-              width="728"
-              height="90"
-              frameBorder="0"
-              scrolling="no"
-              title="Sponsor Ad"
-            />
-          )}
+          <iframe
+            src={iframeSrc}
+            width="728"
+            height="90"
+            frameBorder="0"
+            scrolling="no"
+            title="Sponsor Ad"
+          />
         </div>
       </div>
     </div>
