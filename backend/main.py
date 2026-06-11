@@ -715,65 +715,41 @@ async def _fallback_twitter(url: str):
 async def _fallback_tiktok(url: str):
     """Fallback for TikTok slides when yt-dlp raises No video formats found."""
     try:
-        import re, json
         import httpx
-        async with httpx.AsyncClient(follow_redirects=True, verify=False) as client:
-            resp = await client.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}, timeout=15.0)
-            
-            tk_images = []
-            title = "TikTok Post"
-            
-            match = re.search(r'id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>(.*?)</script>', resp.text)
-            if match:
-                data = json.loads(match.group(1))
-                scope = data.get("__DEFAULT_SCOPE__", {})
-                video_detail = scope.get("webapp.video-detail", {})
-                item_info = video_detail.get("itemInfo", {}).get("itemStruct", {})
-                title = item_info.get("desc", title)
-                if "imagePost" in item_info:
-                    tk_images = item_info["imagePost"].get("images", [])
-                    
-            if not tk_images:
-                match2 = re.search(r'id="SIGI_STATE"[^>]*>(.*?)</script>', resp.text)
-                if match2:
-                    data = json.loads(match2.group(1))
-                    if "ItemModule" in data:
-                        for item_id, item_data in data["ItemModule"].items():
-                            title = item_data.get("desc", title)
-                            if "imagePost" in item_data:
-                                tk_images = item_data["imagePost"].get("images", [])
-                                break
-
-            if tk_images:
-                images = []
-                for idx, img in enumerate(tk_images):
-                    img_url = img.get("imageURL", {}).get("urlList", [""])[0]
-                    if img_url:
+        async with httpx.AsyncClient(verify=False) as client:
+            resp = await client.post("https://www.tikwm.com/api/", data={"url": url}, timeout=15.0)
+            js = resp.json()
+            if js.get("code") == 0:
+                tk_images = js.get("data", {}).get("images", [])
+                if tk_images:
+                    images = []
+                    for idx, img_url in enumerate(tk_images):
                         images.append({
                             "id": f"slide_{idx+1}",
                             "url": img_url,
                             "ext": "jpg"
                         })
-                
-                record_download('tiktok')
-                
-                return JSONResponse(content={
-                    "success": True,
-                    "title": title.replace('\n', ' ')[:80],
-                    "thumbnail": images[0]["url"] if images else "",
-                    "duration": None,
-                    "platform": "tiktok",
-                    "original_url": url,
-                    "needs_proxy": True,
-                    "is_image_only": True,
-                    "formats": {
-                        "video_audio": [],
-                        "video_only": [],
-                        "audio_only": []
-                    },
-                    "images": images,
-                    "subtitles": []
-                })
+                    
+                    record_download('tiktok')
+                    title = js.get("data", {}).get("title", "TikTok Post")
+                    
+                    return JSONResponse(content={
+                        "success": True,
+                        "title": title.replace('\n', ' ')[:80],
+                        "thumbnail": images[0]["url"] if images else "",
+                        "duration": None,
+                        "platform": "tiktok",
+                        "original_url": url,
+                        "needs_proxy": True,
+                        "is_image_only": True,
+                        "formats": {
+                            "video_audio": [],
+                            "video_only": [],
+                            "audio_only": []
+                        },
+                        "images": images,
+                        "subtitles": []
+                    })
     except Exception as e:
         logger.error("TikTok manual fallback error: %s", e)
     return None
@@ -1107,6 +1083,7 @@ async def download(request: Request, url: str = Query(default=None)):
             tk_resp = await _fallback_tiktok(url)
             if tk_resp:
                 return tk_resp
+            raise HTTPException(status_code=500, detail=f"Gagal mengambil video TikTok: {msg}")
             
         elif any(domain in url.lower() for domain in ["facebook.com", "fb.watch", "fb.com"]):
             fb_resp = await _fallback_facebook(url)
