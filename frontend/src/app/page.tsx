@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect, useRef, type FormEvent } from "react";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -395,9 +395,9 @@ interface HistoryItem {
 }
 
 const AdBanner = ({ className = "", t }: { className?: string, t: any }) => {
-  const adRef = React.useRef<HTMLDivElement>(null);
+  const adRef = useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (adRef.current && !adRef.current.querySelector('script[src*="invoke.js"]')) {
       const conf = document.createElement('script');
       conf.type = 'text/javascript';
