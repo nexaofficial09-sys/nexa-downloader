@@ -47,6 +47,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full`}>
+      <head>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9737044242758389" crossOrigin="anonymous"></script>
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
