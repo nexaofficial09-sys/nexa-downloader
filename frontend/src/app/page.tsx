@@ -423,7 +423,9 @@ const AdBanner = ({ className = "", t }: { className?: string, t: any }) => {
   return (
     <div className={`w-full max-w-4xl mx-auto my-6 flex flex-col items-center justify-center text-center overflow-hidden relative group ${className}`}>
       <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 px-2 py-0.5">{t.adBannerSponsor || 'Advertisement'}</span>
-      <div ref={adRef} className="min-h-[90px] w-full flex justify-center items-center overflow-hidden"></div>
+      <div className="w-full flex justify-center overflow-hidden h-[45px] sm:h-[90px]">
+        <div ref={adRef} className="origin-top scale-[0.45] sm:scale-100 flex justify-center items-start"></div>
+      </div>
     </div>
   );
 };
