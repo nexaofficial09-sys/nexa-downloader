@@ -1517,7 +1517,7 @@ export default function Home() {
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">
-                  Pilih &amp; Unduh
+                  {t.howTo3Title}
                 </h3>
                 <p className="text-slate-400 text-sm leading-relaxed">{t.howTo3Desc}</p>
               </div>
