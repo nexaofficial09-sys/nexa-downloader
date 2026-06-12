@@ -80,7 +80,7 @@ export default function PrivacyPolicyPage() {
       <nav className="relative z-20 w-full px-6 md:px-8 lg:px-12 py-4 lg:py-5">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <a href="/" className="flex items-center hover:opacity-80 transition-opacity">
-            <img src="/logo1.png" alt="NEXA Logo" className="h-8 lg:h-11 w-auto object-contain" />
+            <img src="/LogoJadi.png" alt="NEXA Logo" className="h-8 lg:h-11 w-auto object-contain" />
           </a>
           <a href="/" className="text-sm text-slate-500 hover:text-slate-900 transition-colors font-semibold">
             {t.back}
