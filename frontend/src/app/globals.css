@@ -44,6 +44,7 @@ body {
 .badge-twitter:hover  { border-color: #0ea5e9; color: #0284c7; background: #f0f9ff; }
 .badge-facebook:hover { border-color: #3b82f6; color: #2563eb; background: #eff6ff; }
 .badge-pinterest:hover { border-color: #ef4444; color: #dc2626; background: #fef2f2; }
+.badge-bstation:hover { border-color: #00A1D6; color: #00A1D6; background: #e0f6fd; }
 
 /* Animations */
 @keyframes spin-slow {
