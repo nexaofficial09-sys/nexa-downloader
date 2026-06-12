@@ -1615,8 +1615,8 @@ export default function Home() {
               {t.platSectionTitle}
             </h2>
             <div className="flex flex-col gap-10 lg:gap-14 max-w-5xl mx-auto px-6">
-              {/* Top Row: 3 Items */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-10 lg:gap-x-16">
+              {/* Unified 6 Items Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10 lg:gap-x-16">
                 
                 {/* YouTube */}
                 <div className="flex items-start gap-5 group">
@@ -1668,10 +1668,7 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
-              </div>
 
-              {/* Bottom Row: 2 Items, Centered */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 lg:gap-x-16 lg:w-2/3 mx-auto">
                 {/* Twitter / X */}
                 <div className="flex items-start gap-5 group">
                   <div className="mt-1 w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200 shadow-sm transition-transform duration-300 group-hover:scale-110">
