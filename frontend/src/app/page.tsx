@@ -1180,7 +1180,7 @@ export default function Home() {
         {/* NAVBAR */}
         <nav className="relative z-10 w-full px-4 lg:px-8 py-4 flex items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center">
-            <img src="/LogoJadi.png" alt="NEXA Logo" className="h-8 lg:h-10 w-auto object-contain" />
+            <img src="/logo1.png" alt="NEXA Logo" className="h-8 lg:h-10 w-auto object-contain" />
           </div>
           <div className="flex items-center gap-4 text-xs lg:text-sm font-medium">
             <span className="hidden md:inline text-slate-500 hover:text-slate-900 transition-colors cursor-default">
@@ -1933,7 +1933,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 border-t border-slate-200/60 pt-8 lg:pt-10">
           <div className="flex flex-col items-center md:items-start gap-1.5">
             <div className="flex items-center mb-0.5">
-              <img src="/LogoJadi.png" alt="NEXA Logo" className="h-6 lg:h-8 w-auto object-contain" />
+              <img src="/logo1.png" alt="NEXA Logo" className="h-6 lg:h-8 w-auto object-contain" />
             </div>
             <p className="text-slate-500 text-[13.5px]">
               {t.footerRights}

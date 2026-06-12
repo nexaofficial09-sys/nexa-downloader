@@ -72,20 +72,17 @@ export default function PrivacyPolicyPage() {
   const t = translations[lang];
 
   return (
-    <main className="relative min-h-screen overflow-hidden flex flex-col">
+    <main className="relative min-h-screen overflow-hidden flex flex-col bg-[#f8f9fa]">
       {/* Background blobs */}
       <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[400px] lg:w-[700px] h-[300px] lg:h-[500px] bg-blue-600/[0.07] rounded-full filter blur-[100px] lg:blur-[140px] animate-blob pointer-events-none" />
 
       {/* Nav */}
       <nav className="relative z-20 w-full px-6 md:px-8 lg:px-12 py-4 lg:py-5">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2.5 lg:gap-3 hover:opacity-80 transition-opacity">
-            <img src="/logo.png" alt="NEXA Logo" className="w-8 h-8 lg:w-11 lg:h-11 rounded-xl lg:rounded-2xl object-cover shadow-lg shadow-blue-500/15" />
-            <span className="text-base lg:text-xl font-black text-white tracking-tight">
-              NEXA<span className="text-blue-400">.</span>
-            </span>
+          <a href="/" className="flex items-center hover:opacity-80 transition-opacity">
+            <img src="/logo1.png" alt="NEXA Logo" className="h-8 lg:h-11 w-auto object-contain" />
           </a>
-          <a href="/" className="text-sm text-slate-400 hover:text-white transition-colors font-semibold">
+          <a href="/" className="text-sm text-slate-500 hover:text-slate-900 transition-colors font-semibold">
             {t.back}
           </a>
         </div>
@@ -94,23 +91,23 @@ export default function PrivacyPolicyPage() {
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center px-6 md:px-8 lg:px-12 pb-16">
         <div className="w-full max-w-3xl">
-          <h1 className="text-3xl lg:text-4xl font-black text-white mb-2 text-center">
+          <h1 className="text-3xl lg:text-4xl font-black text-slate-900 mb-2 text-center">
             {t.title}
           </h1>
-          <p className="text-slate-400 text-sm text-center mb-10">
+          <p className="text-slate-500 text-sm text-center mb-10">
             {t.lastUpdated}
           </p>
 
-          <div className="space-y-8 text-slate-300 text-sm lg:text-base leading-relaxed">
+          <div className="space-y-8 text-slate-600 text-sm lg:text-base leading-relaxed">
             <section>
-              <h2 className="text-lg font-bold text-white mb-3">{t.section1}</h2>
+              <h2 className="text-lg font-bold text-slate-900 mb-3">{t.section1}</h2>
               <p>{t.p1}</p>
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-3">{t.section2}</h2>
+              <h2 className="text-lg font-bold text-slate-900 mb-3">{t.section2}</h2>
               <p>{t.p2}</p>
-              <ul className="list-disc list-inside mt-2 space-y-1 text-slate-400">
+              <ul className="list-disc list-inside mt-2 space-y-1 text-slate-500">
                 <li>{t.l2_1}</li>
                 <li>{t.l2_2}</li>
                 <li>{t.l2_3}</li>
@@ -118,31 +115,31 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-3">{t.section3}</h2>
+              <h2 className="text-lg font-bold text-slate-900 mb-3">{t.section3}</h2>
               <p>{t.p3}</p>
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-3">{t.section4}</h2>
+              <h2 className="text-lg font-bold text-slate-900 mb-3">{t.section4}</h2>
               <p>{t.p4}</p>
-              <ul className="list-disc list-inside mt-2 space-y-1 text-slate-400">
+              <ul className="list-disc list-inside mt-2 space-y-1 text-slate-500">
                 <li><strong>Google AdSense</strong> — {t.l4_1}</li>
                 <li><strong>Vercel</strong> — {t.l4_2}</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-3">{t.section5}</h2>
+              <h2 className="text-lg font-bold text-slate-900 mb-3">{t.section5}</h2>
               <p>{t.p5}</p>
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-3">{t.section6}</h2>
+              <h2 className="text-lg font-bold text-slate-900 mb-3">{t.section6}</h2>
               <p>{t.p6}</p>
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-3">{t.section7}</h2>
+              <h2 className="text-lg font-bold text-slate-900 mb-3">{t.section7}</h2>
               <p>{t.p7}</p>
             </section>
           </div>
@@ -151,7 +148,7 @@ export default function PrivacyPolicyPage() {
 
       {/* Footer */}
       <footer className="relative z-10 w-full px-6 md:px-8 lg:px-12">
-        <div className="max-w-4xl mx-auto border-t border-white/[0.06] py-6 text-center">
+        <div className="max-w-4xl mx-auto border-t border-slate-200/60 py-6 text-center">
           <p className="text-slate-500 text-xs">{t.footer}</p>
         </div>
       </footer>

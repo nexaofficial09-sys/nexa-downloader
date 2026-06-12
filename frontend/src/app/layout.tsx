@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     url: "https://dl.nexalabs.my.id",
     images: [
       {
-        url: "/logo.png",
-        width: 1024,
-        height: 1023,
+        url: "/logo1.png",
+        width: 1200,
+        height: 630,
         alt: "NEXA Downloader Logo",
       },
     ],
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "NEXA Downloader — Download Video dari Semua Platform",
     description: "Download video, audio, dan foto dari YouTube, TikTok, Instagram, Twitter/X, dan Facebook. Gratis, cepat, tanpa registrasi.",
-    images: ["/logo.png"],
+    images: ["/logo1.png"],
   },
 };
 
