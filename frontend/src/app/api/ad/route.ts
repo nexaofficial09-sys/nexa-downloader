@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   const width = searchParams.get("w") || "728";
   const height = searchParams.get("h") || "90";
 
-  const html = <!DOCTYPE html>
+  const html = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -29,16 +29,16 @@ export async function GET(req: NextRequest) {
 <body>
   <script type="text/javascript">
     atOptions = {
-      'key' : '',
+      'key' : '${key}',
       'format' : 'iframe',
-      'height' : ,
-      'width' : ,
+      'height' : ${height},
+      'width' : ${width},
       'params' : {}
     };
   </script>
-  <script type="text/javascript" src="//www.highperformanceformat.com//invoke.js"></script>
+  <script type="text/javascript" src="//www.highperformanceformat.com/${key}/invoke.js"></script>
 </body>
-</html>;
+</html>`;
 
   return new NextResponse(html, {
     headers: {
