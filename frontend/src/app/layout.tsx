@@ -9,35 +9,38 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "NEXA Downloader — Download Video dari Semua Platform",
+  title: "NEXA Downloader — Download Video TikTok, YouTube, IG Tanpa Watermark",
   description:
-    "Download high-quality videos, audio, and image carousels from YouTube, TikTok, Instagram, Twitter/X, and Facebook. Fast, free, no registration.",
+    "Situs download video TikTok tanpa watermark, YouTube MP4/MP3, Instagram Reels, Facebook, dan Twitter/X gratis dengan kualitas HD. Proses cepat dan tanpa batas.",
   keywords: [
-    "video downloader", "tiktok downloader", "youtube downloader",
-    "instagram downloader", "media downloader", "download video gratis",
-    "download tiktok tanpa watermark", "unduh video youtube",
+    "download video tiktok", "tiktok downloader tanpa watermark", "youtube downloader mp4",
+    "download mp3 youtube", "download reels instagram", "facebook video downloader",
+    "twitter video downloader", "download video hd", "ssstik", "savefrom", "nexa downloader"
   ],
   authors: [{ name: "NEXA" }],
-  metadataBase: new URL("https://dl.nexalabs.my.id"),
+  metadataBase: new URL("https://nexalabs.my.id"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "NEXA Downloader — Download Video dari Semua Platform",
-    description: "Download video, audio, dan foto dari YouTube, TikTok, Instagram, Twitter/X, dan Facebook. Gratis, cepat, tanpa registrasi.",
+    title: "NEXA Downloader — Download Video & Audio Gratis",
+    description: "Download video dari TikTok tanpa watermark, YouTube, IG, FB, dan Twitter dengan kualitas HD. 100% gratis, super cepat, tanpa perlu aplikasi tambahan.",
     type: "website",
     siteName: "NEXA Downloader",
-    url: "https://dl.nexalabs.my.id",
+    url: "https://nexalabs.my.id",
     images: [
       {
         url: "/LogoJadi.png",
         width: 1200,
         height: 630,
-        alt: "NEXA Downloader Logo",
+        alt: "NEXA Downloader",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NEXA Downloader — Download Video dari Semua Platform",
-    description: "Download video, audio, dan foto dari YouTube, TikTok, Instagram, Twitter/X, dan Facebook. Gratis, cepat, tanpa registrasi.",
+    title: "NEXA Downloader — Download Video & Audio Gratis",
+    description: "Download video dari TikTok tanpa watermark, YouTube, IG, FB, dan Twitter dengan kualitas HD. 100% gratis dan super cepat.",
     images: ["/LogoJadi.png"],
   },
   icons: {
