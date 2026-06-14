@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, type FormEvent } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -46,6 +47,36 @@ interface ExtractResult {
   images: ExtractedImage[];
   subtitles?: ExtractedSubtitle[];
 }
+
+
+const staggerContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    }
+  }
+};
+
+import type { Variants } from "framer-motion";
+
+const staggerItem: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 250, damping: 25 } }
+};
+
+const FadeInView = ({ children, className }: { children: React.ReactNode, className?: string }) => (
+  <motion.div
+    variants={staggerContainer}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, margin: "-50px" }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
 
 const API_BASE =
   typeof window !== "undefined" && window.location.hostname === "localhost"
@@ -1189,11 +1220,11 @@ export default function Home() {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.015] pointer-events-none"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
         
-        {/* Animated Background Auroras (Premium Stripe-style) */}
-        <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-full max-w-5xl h-[600px] pointer-events-none overflow-hidden mix-blend-multiply opacity-40">
-          <div className="absolute top-0 left-[20%] w-[400px] h-[400px] bg-blue-300 rounded-full blur-[100px] animate-blob"></div>
-          <div className="absolute top-0 right-[20%] w-[400px] h-[400px] bg-sky-200 rounded-full blur-[100px] animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-10 left-[40%] w-[400px] h-[400px] bg-cyan-200 rounded-full blur-[100px] animate-blob animation-delay-4000"></div>
+        {/* Animated Background Auroras (Premium Edge-to-Edge) */}
+        <div className="absolute top-[-20%] left-0 w-full h-[800px] pointer-events-none mix-blend-multiply opacity-70">
+          <div className="absolute top-[-10%] -left-[20vw] w-[80vw] h-[600px] bg-blue-400 rounded-full blur-[120px] animate-blob"></div>
+          <div className="absolute top-[-10%] -right-[20vw] w-[80vw] h-[600px] bg-sky-300 rounded-full blur-[120px] animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-20 left-[10vw] w-[80vw] h-[600px] bg-cyan-300 rounded-full blur-[120px] animate-blob animation-delay-4000"></div>
         </div>
 
         {/* NAVBAR */}
@@ -1226,21 +1257,25 @@ export default function Home() {
 
         {/* HERO */}
         <div className="relative z-10 text-center mt-12 md:mt-16 lg:mt-20 px-4">
-          <h1 
-            className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 lg:mb-6 tracking-tighter text-zinc-950 fade-in-up"
-            style={{ animationDelay: '0.1s' }}
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 lg:mb-6 tracking-tighter text-zinc-950"
           >
             {t.heroTitle}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-blue-500 to-cyan-500 animate-text-shine">
               {t.heroSub}
             </span>
-          </h1>
-          <p 
-            className="text-zinc-500 text-sm md:text-base lg:text-lg max-w-2xl mx-auto leading-relaxed font-medium fade-in-up"
-            style={{ animationDelay: '0.2s' }}
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+            className="text-zinc-500 text-sm md:text-base lg:text-lg max-w-2xl mx-auto leading-relaxed font-medium"
           >
             {t.heroDesc}
-          </p>
+          </motion.p>
         </div>
       </div>
 
@@ -1251,9 +1286,11 @@ export default function Home() {
         <div className="w-full max-w-3xl xl:max-w-4xl flex-1 flex flex-col">
           
           {/* ---- INPUT BAR ---- */}
-          <div 
-            className="relative bg-white border border-zinc-200/80 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-1.5 md:p-2 mb-6 w-full transition-all focus-within:border-blue-400/50 focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:shadow-[0_8px_40px_rgb(37,99,235,0.08)] fade-in-up"
-            style={{ animationDelay: '0.3s' }}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+            className="relative bg-white border border-zinc-200/80 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-1.5 md:p-2 mb-6 w-full transition-all focus-within:border-blue-400/50 focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:shadow-[0_8px_40px_rgb(37,99,235,0.08)]"
           >
             <form
               onSubmit={handleSubmit}
@@ -1286,9 +1323,11 @@ export default function Home() {
                 )}
               </div>
 
-              <button
+              <motion.button
                 type="submit"
                 disabled={loading}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 className="w-full sm:w-auto px-8 py-3.5 lg:py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all disabled:opacity-60 flex items-center justify-center gap-2 text-sm lg:text-base shrink-0 shadow-[0_4px_14px_0_rgb(37,99,235,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] hover:-translate-y-0.5"
               >
                 {loading ? (
@@ -1332,9 +1371,9 @@ export default function Home() {
                     </svg>
                   </>
                 )}
-              </button>
+              </motion.button>
             </form>
-          </div>
+          </motion.div>
 
 
           {/* ---- PLATFORM BADGES ---- */}
@@ -1355,18 +1394,46 @@ export default function Home() {
             </div>
           )}
 
+          {/* ADS BANNER (Optional) */}
+          <div className="mt-8 mb-4 max-w-4xl mx-auto flex justify-center">
+            {/* SPONSORED AD SPACE */}
+            <div className="w-full h-[90px] bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center relative overflow-hidden">
+              <span className="text-[10px] font-bold text-slate-300 tracking-widest uppercase z-10">
+                Sponsored Ad Space
+              </span>
+              {/* Optional shimmering effect for ad space */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-[shimmer_2s_infinite] -skew-x-12"></div>
+            </div>
+          </div>
+
           {/* ---- AD BANNER (TOP) ---- */}
-          {!loading && !result && (
-            <AdBanner
-              t={t}
-              className="mb-8 fade-in-up"
-              adKey="d31d63c10f8f6f0016816fadb798f628"
-            />
-          )}
+          <AnimatePresence>
+            {!loading && !result && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <AdBanner
+                  t={t}
+                  className="mb-8"
+                  adKey="d31d63c10f8f6f0016816fadb798f628"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* ---- ERROR ---- */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 p-3.5 lg:p-5 rounded-xl lg:rounded-2xl mb-5 lg:mb-8 flex items-start gap-3 fade-in-up">
+          <AnimatePresence mode="wait">
+            {error && (
+              <motion.div 
+                key="error"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="bg-red-50 border border-red-200 text-red-700 p-3.5 lg:p-5 rounded-xl lg:rounded-2xl mb-5 lg:mb-8 flex items-start gap-3"
+              >
               <svg
                 className="w-5 h-5 text-red-500 shrink-0 mt-0.5"
                 fill="none"
@@ -1386,12 +1453,21 @@ export default function Home() {
                 </h3>
                 <p className="text-xs lg:text-sm mt-1 text-red-600">{error}</p>
               </div>
-            </div>
+            </motion.div>
           )}
+          </AnimatePresence>
 
           {/* ---- RESULTS PANEL ---- */}
-          {result && (
-            <div className="card-clean rounded-2xl lg:rounded-3xl p-4 md:p-6 lg:p-8 fade-in-up">
+          <AnimatePresence mode="wait">
+            {result && (
+              <motion.div 
+                key="result"
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                className="card-clean rounded-2xl lg:rounded-3xl p-4 md:p-6 lg:p-8"
+              >
               <div className="flex flex-col md:flex-row gap-4 lg:gap-6 items-start mb-5 lg:mb-8 pb-5 lg:pb-8 border-b border-slate-200">
                 <div
                   className={`relative shrink-0 rounded-xl lg:rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 group flex items-center justify-center ${result.platform?.toLowerCase() === "youtube" ? "w-full md:w-48 lg:w-60 xl:w-64 aspect-video" : "w-fit max-w-full mx-auto md:mx-0"}`}
@@ -1621,24 +1697,25 @@ export default function Home() {
                   Download Another
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
+          </AnimatePresence>
 
           {/* ============================================================
               INFORMATIONAL SECTIONS
               ============================================================ */}
 
           {/* ---- PLATFORM SUPPORT ---- */}
-          <div className="mt-20 lg:mt-32 fade-in-up">
-            <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-12 text-center">
+          <FadeInView className="mt-20 lg:mt-32">
+            <motion.h2 variants={staggerItem} className="text-2xl lg:text-3xl font-bold text-slate-900 mb-12 text-center">
               {t.platSectionTitle}
-            </h2>
+            </motion.h2>
             <div className="flex flex-col gap-10 lg:gap-14 max-w-5xl mx-auto px-6">
               {/* Unified 6 Items Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10 lg:gap-x-16">
                 
                 {/* YouTube */}
-                <div className="flex items-start gap-5 group">
+                <motion.div variants={staggerItem} className="flex items-start gap-5 group">
                   <div className="mt-1 w-12 h-12 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 shadow-sm transition-transform duration-300 group-hover:scale-110">
                     <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
@@ -1652,10 +1729,10 @@ export default function Home() {
                       {t.platYtDesc}
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* TikTok */}
-                <div className="flex items-start gap-5 group">
+                <motion.div variants={staggerItem} className="flex items-start gap-5 group">
                   <div className="mt-1 w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200 shadow-sm transition-transform duration-300 group-hover:scale-110">
                     <svg className="w-5 h-5 text-slate-900" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
@@ -1669,10 +1746,10 @@ export default function Home() {
                       {t.platTtDesc}
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Instagram */}
-                <div className="flex items-start gap-5 group">
+                <motion.div variants={staggerItem} className="flex items-start gap-5 group">
                   <div className="mt-1 w-12 h-12 rounded-full bg-pink-50 flex items-center justify-center shrink-0 border border-pink-100 shadow-sm transition-transform duration-300 group-hover:scale-110">
                     <svg className="w-5 h-5 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
@@ -1686,10 +1763,10 @@ export default function Home() {
                       {t.platIgDesc}
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Twitter / X */}
-                <div className="flex items-start gap-5 group">
+                <motion.div variants={staggerItem} className="flex items-start gap-5 group">
                   <div className="mt-1 w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200 shadow-sm transition-transform duration-300 group-hover:scale-110">
                     <svg className="w-4 h-4 text-slate-900" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -1703,10 +1780,10 @@ export default function Home() {
                       {t.platTwDesc}
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Facebook */}
-                <div className="flex items-start gap-5 group">
+                <motion.div variants={staggerItem} className="flex items-start gap-5 group">
                   <div className="mt-1 w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 shadow-sm transition-transform duration-300 group-hover:scale-110">
                     <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -1720,10 +1797,10 @@ export default function Home() {
                       {t.platFbDesc}
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Pinterest */}
-                <div className="flex items-start gap-5 group">
+                <motion.div variants={staggerItem} className="flex items-start gap-5 group">
                   <div className="mt-1 w-12 h-12 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 shadow-sm transition-transform duration-300 group-hover:scale-110">
                     <svg className="w-5 h-5 text-[#E60023]" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.951-7.252 4.182 0 7.436 2.983 7.436 6.953 0 4.156-2.618 7.502-6.257 7.502-1.22 0-2.368-.635-2.76-1.385l-.754 2.875c-.272 1.039-1.015 2.34-1.51 3.136 1.43.441 2.955.679 4.536.679 6.621 0 11.988-5.368 11.988-11.988 0-6.62-5.367-11.987-11.988-11.987z" />
@@ -1737,10 +1814,10 @@ export default function Home() {
                       {t.platPinDesc}
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Bstation / Bilibili */}
-                <div className="flex items-start gap-5 group">
+                <motion.div variants={staggerItem} className="flex items-start gap-5 group">
                   <div className="mt-1 w-12 h-12 rounded-full bg-[#00A1D6]/10 flex items-center justify-center shrink-0 border border-[#00A1D6]/20 shadow-sm transition-transform duration-300 group-hover:scale-110">
                     <svg className="w-5 h-5 text-[#00A1D6]" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.72c.267-.249.573-.373.92-.373.347 0 .662.124.947.373.284.249.426.551.426.907s-.142.65-.426.906l-1.174 1.12zM5.333 7.24c-.746.018-1.373.276-1.88.774-.506.497-.764 1.124-.773 1.88v7.36c.009.755.267 1.382.773 1.88.507.498 1.134.755 1.88.773h13.334c.746-.018 1.373-.275 1.88-.773.506-.498.764-1.125.773-1.88v-7.36c-.009-.756-.267-1.383-.773-1.88-.507-.498-1.134-.756-1.88-.774H5.333zM7.067 10.653c.409 0 .755.142 1.04.427.284.284.426.63.426 1.04v1.813c0 .409-.142.756-.426 1.04-.285.285-.631.427-1.04.427-.409 0-.756-.142-1.04-.427-.285-.284-.427-.631-.427-1.04v-1.813c0-.409.142-.756.427-1.04.284-.285.631-.427 1.04-.427zm10.133 0c.409 0 .756.142 1.04.427.285.284.427.63.427 1.04v1.813c0 .409-.142.756-.427 1.04-.284.285-.631.427-1.04.427-.409 0-.756-.142-1.04-.427-.285-.284-.427-.631-.427-1.04v-1.813c0-.409.142-.756.427-1.04.284-.285.631-.427 1.04-.427z" />
@@ -1754,22 +1831,22 @@ export default function Home() {
                       {t.platBsDesc}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </div>
-          </div>
+          </FadeInView>
 
           {/* ---- HOW TO USE ---- */}
-          <div className="mt-20 lg:mt-32 fade-in-up">
-            <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-12 text-center">
+          <FadeInView className="mt-20 lg:mt-32">
+            <motion.h2 variants={staggerItem} className="text-2xl lg:text-3xl font-bold text-slate-900 mb-12 text-center">
               {t.howToTitle}
-            </h2>
+            </motion.h2>
             <div className="flex flex-col md:flex-row gap-8 lg:gap-10 justify-center relative max-w-4xl mx-auto px-6">
               {/* Connecting line (desktop) */}
               <div className="hidden md:block absolute top-6 left-[16%] right-[16%] h-[1px] bg-slate-200" />
 
               {/* Step 1 */}
-              <div className="relative z-10 flex flex-col items-center text-center flex-1 group">
+              <motion.div variants={staggerItem} className="relative z-10 flex flex-col items-center text-center flex-1 group">
                 <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mb-6 shadow-sm ring-8 ring-[#f8f9fa] transition-all duration-300 group-hover:scale-110">
                   <span className="text-blue-600 font-bold text-lg">1</span>
                 </div>
@@ -1779,10 +1856,10 @@ export default function Home() {
                 <p className="text-slate-500 text-[14.5px] leading-relaxed max-w-[260px] mx-auto">
                   {t.howTo1Desc}
                 </p>
-              </div>
+              </motion.div>
 
               {/* Step 2 */}
-              <div className="relative z-10 flex flex-col items-center text-center flex-1 group">
+              <motion.div variants={staggerItem} className="relative z-10 flex flex-col items-center text-center flex-1 group">
                 <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mb-6 shadow-sm ring-8 ring-[#f8f9fa] transition-all duration-300 group-hover:scale-110">
                   <span className="text-blue-600 font-bold text-lg">2</span>
                 </div>
@@ -1792,10 +1869,10 @@ export default function Home() {
                 <p className="text-slate-500 text-[14.5px] leading-relaxed max-w-[260px] mx-auto">
                   {t.howTo2Desc}
                 </p>
-              </div>
+              </motion.div>
 
               {/* Step 3 */}
-              <div className="relative z-10 flex flex-col items-center text-center flex-1 group">
+              <motion.div variants={staggerItem} className="relative z-10 flex flex-col items-center text-center flex-1 group">
                 <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mb-6 shadow-sm ring-8 ring-[#f8f9fa] transition-all duration-300 group-hover:scale-110">
                   <span className="text-blue-600 font-bold text-lg">3</span>
                 </div>
@@ -1805,17 +1882,17 @@ export default function Home() {
                 <p className="text-slate-500 text-[14.5px] leading-relaxed max-w-[260px] mx-auto">
                   {t.howTo3Desc}
                 </p>
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </FadeInView>
 
           {/* ---- ADVANTAGES ---- */}
-          <div className="mt-20 lg:mt-32 fade-in-up">
-            <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-12 text-center">
+          <FadeInView className="mt-20 lg:mt-32">
+            <motion.h2 variants={staggerItem} className="text-2xl lg:text-3xl font-bold text-slate-900 mb-12 text-center">
               {t.featSectionTitle}
-            </h2>
+            </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 lg:gap-x-16 lg:gap-y-14 max-w-5xl mx-auto px-6">
-              <div className="flex items-start gap-5">
+              <motion.div variants={staggerItem} className="flex items-start gap-5">
                 <div className="mt-1 w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 shadow-sm">
                   <svg
                     className="w-5 h-5 text-blue-600"
@@ -1839,8 +1916,8 @@ export default function Home() {
                     {t.feat1Desc}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-start gap-5">
+              </motion.div>
+              <motion.div variants={staggerItem} className="flex items-start gap-5">
                 <div className="mt-1 w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 shadow-sm">
                   <svg
                     className="w-5 h-5 text-blue-600"
@@ -1864,8 +1941,8 @@ export default function Home() {
                     {t.feat2Desc}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-start gap-5">
+              </motion.div>
+              <motion.div variants={staggerItem} className="flex items-start gap-5">
                 <div className="mt-1 w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 shadow-sm">
                   <svg
                     className="w-5 h-5 text-blue-600"
@@ -1889,8 +1966,8 @@ export default function Home() {
                     {t.feat4Desc}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-start gap-5">
+              </motion.div>
+              <motion.div variants={staggerItem} className="flex items-start gap-5">
                 <div className="mt-1 w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 shadow-sm">
                   <svg
                     className="w-5 h-5 text-blue-600"
@@ -1914,48 +1991,48 @@ export default function Home() {
                     {t.feat3Desc}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </FadeInView>
 
           {/* ---- FAQ ---- */}
-          <div className="mt-20 lg:mt-32 mb-16 lg:mb-20 fade-in-up">
+          <FadeInView className="mt-20 lg:mt-32 mb-16 lg:mb-20">
             <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-10 text-center">
               {t.faqTitle}
             </h2>
             <div className="max-w-3xl mx-auto px-6">
               <div className="border-t border-slate-200 divide-y divide-slate-200">
                 
-                <div className="py-5 lg:py-6 flex flex-col md:flex-row gap-2 md:gap-6 lg:gap-10">
+                <motion.div variants={staggerItem} className="py-5 lg:py-6 flex flex-col md:flex-row gap-2 md:gap-6 lg:gap-10">
                   <h4 className="text-slate-900 font-semibold text-[17px] md:w-1/3 shrink-0">
                     {t.faq1Q}
                   </h4>
                   <p className="text-slate-500 text-[15px] leading-relaxed">
                     {t.faq1A}
                   </p>
-                </div>
+                </motion.div>
 
-                <div className="py-5 lg:py-6 flex flex-col md:flex-row gap-2 md:gap-6 lg:gap-10">
+                <motion.div variants={staggerItem} className="py-5 lg:py-6 flex flex-col md:flex-row gap-2 md:gap-6 lg:gap-10">
                   <h4 className="text-slate-900 font-semibold text-[17px] md:w-1/3 shrink-0">
                     {t.faq2Q}
                   </h4>
                   <p className="text-slate-500 text-[15px] leading-relaxed">
                     {t.faq2A}
                   </p>
-                </div>
+                </motion.div>
 
-                <div className="py-5 lg:py-6 flex flex-col md:flex-row gap-2 md:gap-6 lg:gap-10">
+                <motion.div variants={staggerItem} className="py-5 lg:py-6 flex flex-col md:flex-row gap-2 md:gap-6 lg:gap-10">
                   <h4 className="text-slate-900 font-semibold text-[17px] md:w-1/3 shrink-0">
                     {t.faq3Q}
                   </h4>
                   <p className="text-slate-500 text-[15px] leading-relaxed">
                     {t.faq3A}
                   </p>
-                </div>
+                </motion.div>
 
               </div>
             </div>
-          </div>
+          </FadeInView>
 
           <AdBanner t={t} className="mb-4 lg:mb-8" />
           <div className="flex-1" />
