@@ -534,23 +534,24 @@ export function AdBanner({
   const scale = availableWidth / adWidth;
   const scaledHeight = adHeight * scale;
 
-  const iframeSrc = `https://www.highperformanceformat.com/watchnew?key=${keyToUse}&format=iframe&height=${adHeight}&width=${adWidth}`;
-
   return (
     <div
-      className={`w-full mx-auto my-4 flex flex-col items-center justify-center text-center overflow-hidden ${className}`}
+      className={`w-full max-w-[728px] mx-auto my-4 bg-slate-50 border border-slate-100 rounded-xl flex flex-col items-center justify-center text-center overflow-hidden relative ${className}`}
       style={{ minHeight: mounted ? scaledHeight + 30 : adHeight + 30 }}
     >
-      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 px-2">
+      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 px-2 z-10">
         {t?.adBannerSponsor || "Advertisement"}
       </span>
+      {/* Optional shimmering effect while loading */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-[shimmer_2s_infinite] -skew-x-12 pointer-events-none"></div>
+      
       <div 
-        className="flex justify-center items-start overflow-hidden relative" 
+        className="flex justify-center items-start overflow-hidden relative z-20" 
         style={{ width: availableWidth, height: scaledHeight }}
       >
         {mounted ? (
           <iframe
-            src={iframeSrc}
+            src={`/ad_bottom.html?key=${keyToUse}`}
             width={adWidth}
             height={adHeight}
             frameBorder="0"
@@ -1394,17 +1395,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* ADS BANNER (Optional) */}
-          <div className="mt-8 mb-4 max-w-4xl mx-auto flex justify-center">
-            {/* SPONSORED AD SPACE */}
-            <div className="w-full h-[90px] bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center relative overflow-hidden">
-              <span className="text-[10px] font-bold text-slate-300 tracking-widest uppercase z-10">
-                Sponsored Ad Space
-              </span>
-              {/* Optional shimmering effect for ad space */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-[shimmer_2s_infinite] -skew-x-12"></div>
-            </div>
-          </div>
 
           {/* ---- AD BANNER (TOP) ---- */}
           <AnimatePresence>
