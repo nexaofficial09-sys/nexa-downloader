@@ -67,7 +67,7 @@ export default function RootLayout({
           href="https://saweria.co/NEXAOfficial" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-[#ffb72b] hover:bg-[#e09e1e] text-amber-950 font-bold px-5 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-2 border-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:-translate-y-1 active:scale-95 group"
+          className="fixed bottom-6 left-6 z-50 flex items-center gap-2 bg-[#ffb72b] hover:bg-[#e09e1e] text-amber-950 font-bold px-5 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-2 border-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:-translate-y-1 active:scale-95 group"
           aria-label="Donasi Saweria"
         >
           <span className="text-2xl group-hover:animate-bounce">☕</span>
