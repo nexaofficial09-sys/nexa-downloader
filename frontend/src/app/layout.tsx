@@ -59,7 +59,21 @@ export default function RootLayout({
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9737044242758389" crossOrigin="anonymous"></script>
         <script src="https://pl29709267.effectivecpmnetwork.com/16/dc/c4/16dcc4149d8ea5316f20076370262bec.js" async></script>
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        
+        {/* Floating Saweria Donation Button */}
+        <a 
+          href="https://saweria.co/NEXAOfficial" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-[#ffb72b] hover:bg-[#e09e1e] text-amber-950 font-bold px-5 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-2 border-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:-translate-y-1 active:scale-95 group"
+          aria-label="Donasi Saweria"
+        >
+          <span className="text-2xl group-hover:animate-bounce">☕</span>
+          <span className="hidden sm:inline tracking-wide">Traktir Kopi</span>
+        </a>
+      </body>
     </html>
   );
 }
