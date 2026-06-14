@@ -551,7 +551,7 @@ export function AdBanner({
       >
         {mounted ? (
           <iframe
-            src={`/ad_bottom.html?key=${keyToUse}`}
+            src={`/api/ad?key=${keyToUse}&w=${adWidth}&h=${adHeight}`}
             width={adWidth}
             height={adHeight}
             frameBorder="0"
