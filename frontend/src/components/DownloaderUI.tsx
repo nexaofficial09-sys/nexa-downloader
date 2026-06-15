@@ -580,7 +580,7 @@ export interface DownloaderUIProps {
 }
 
 export default function DownloaderUI({ platformName, seoH1, seoDescription }: DownloaderUIProps) {
-  const isMaintenance = true;
+  const isMaintenance = false;
 
   if (
     isMaintenance &&
