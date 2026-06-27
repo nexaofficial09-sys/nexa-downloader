@@ -536,38 +536,23 @@ export function AdBanner({
 
   return (
     <div
-      className={`w-full max-w-[728px] mx-auto my-4 bg-slate-50 border border-slate-100 rounded-xl flex flex-col items-center justify-center text-center overflow-hidden relative ${className}`}
+      className={`w-full max-w-[728px] mx-auto my-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col items-center justify-center text-center overflow-hidden relative ${className}`}
       style={{ minHeight: mounted ? scaledHeight + 30 : adHeight + 30 }}
     >
-      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 px-2 z-10">
+      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-2 z-10">
         {t?.adBannerSponsor || "Advertisement"}
       </span>
       {/* Optional shimmering effect while loading */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-[shimmer_2s_infinite] -skew-x-12 pointer-events-none"></div>
       
       <div 
-        className="flex justify-center items-start overflow-hidden relative z-20" 
+        className="flex justify-center items-center overflow-hidden relative z-20 text-slate-400 text-sm font-medium p-2" 
         style={{ width: availableWidth, height: scaledHeight }}
       >
-        {mounted ? (
-          <iframe
-            src={`/api/ad?key=${keyToUse}&w=${adWidth}&h=${adHeight}`}
-            width={adWidth}
-            height={adHeight}
-            frameBorder="0"
-            scrolling="no"
-            style={{ 
-              border: "none", 
-              transform: `scale(${scale})`, 
-              transformOrigin: "top left",
-              position: "absolute",
-              top: 0,
-              left: 0
-            }}
-          ></iframe>
-        ) : (
-          <div className="animate-pulse bg-slate-200 rounded" style={{ width: availableWidth, height: scaledHeight }}></div>
-        )}
+        <div className="w-full h-full border-2 border-dashed border-slate-300 rounded flex flex-col items-center justify-center bg-white/40">
+           <span className="mb-1 text-slate-600 font-bold">{t?.adBannerTitle || "Advertise Here"}</span>
+           <span className="text-xs text-slate-400 px-4 leading-relaxed">{t?.adBannerDesc || "Reach thousands of NEXA Downloader users daily."}</span>
+        </div>
       </div>
     </div>
   );
@@ -803,20 +788,18 @@ export default function DownloaderUI({ platformName, seoH1, seoDescription }: Do
     return () => clearInterval(interval);
   }, [mergeAlert]);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!url.trim()) return;
+  const extractUrl = async (targetUrl: string) => {
+    if (!targetUrl.trim()) return;
     setLoading(true);
     setError("");
     setResult(null);
     try {
       const res = await fetch(
-        `${API_BASE}/api/download?url=${encodeURIComponent(url.trim())}`,
+        `${API_BASE}/api/download?url=${encodeURIComponent(targetUrl.trim())}`,
       );
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Failed to extract.");
       setResult(data);
-      // History disabled
       if (
         data.is_image_only ||
         (data.images?.length > 0 && data.formats.video_audio.length === 0)
@@ -831,6 +814,22 @@ export default function DownloaderUI({ platformName, seoH1, seoDescription }: Do
       setLoading(false);
     }
   };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    await extractUrl(url);
+  };
+
+  // Auto-submit effect
+  useEffect(() => {
+    const trimmed = url.trim();
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      const timer = setTimeout(() => {
+        extractUrl(trimmed);
+      }, 800); // 800ms debounce
+      return () => clearTimeout(timer);
+    }
+  }, [url]);
 
   // -----------------------------------------------------------------------
   // Format cards
